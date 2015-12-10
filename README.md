@@ -10,20 +10,20 @@ The Statute Validator has three purposes:
 
        HTTP GET with JSON data:
 
-         ``` javascript
-         {
-           statute: "T21C21.04.080"
-         }
-         ```
+``` javascript
+{
+ statute: "T21C21.04.080"
+}
+```
 
        HTTP Response:
 
-         ``` javascript
-         {
-           statute: "T21C21.04.080",
-           text: "The Chief Engineer is a Licensed Professional Engineer in charge of the Bureau engineering staff. The Chief Engineer, or the Chief Engineer's designee, is responsible for establishing, maintaining, and enforcing engineering and technical standards for design and construction of the water system."
-         }
-         ```
+``` javascript
+{
+ statute: "T21C21.04.080",
+ text: "The Chief Engineer is a Licensed Professional Engineer in charge of the Bureau engineering staff. The Chief Engineer, or the Chief Engineer's designee, is responsible for establishing, maintaining, and enforcing engineering and technical standards for design and construction of the water system."
+}
+```
 
 2. Retrieve the requirements of a statute that has corresponding quantitative requirements.
 
