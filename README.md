@@ -1,7 +1,5 @@
 # Purpose
-
-## The Statute Validator has three purposes:
- 
+#### The Statute Validator has three purposes:
 #### Retrieve the text of a statute.
 
 Example: Get the text of Title 21 Chapter 21.04.080.
