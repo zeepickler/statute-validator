@@ -93,8 +93,7 @@ HTTP Response:
  
 ```
 
-#### Determine if you are in compliance with the law by submitting relevant quantitative data 
-for a given statute.
+#### Determine if you are in compliance with the law by submitting relevant quantitative data for a given statute.
 
    Example: Provide the requirements of Title 21 Chapter 21.12.140 and determine compliance.
 
