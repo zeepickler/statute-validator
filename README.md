@@ -27,7 +27,7 @@ HTTP Response:
 }
 ```
 
-2. Retrieve the requirements of a statute that has corresponding quantitative requirements.
+1. Retrieve the requirements of a statute that has corresponding quantitative requirements.
 
 Example: Get the requirements of Title 21 Chapter 21.12.140.
 
@@ -95,7 +95,7 @@ HTTP Response:
  
 ```
 
-3. Determine if you are in compliance with the law by submitting relevant quantitative data 
+1. Determine if you are in compliance with the law by submitting relevant quantitative data 
    for a given statute.
 
    Example: Provide the requirements of Title 21 Chapter 21.12.140 and determine compliance.
