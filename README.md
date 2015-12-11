@@ -95,32 +95,32 @@ HTTP Response:
 
 #### Determine if you are in compliance with the law by submitting relevant quantitative data for a given statute.
 
-   Example: Provide the requirements of Title 21 Chapter 21.12.140 and determine compliance.
+Example: Provide the requirements of Title 21 Chapter 21.12.140 and determine compliance.
 
-   HTTP GET with JSON data:
+HTTP GET with JSON data:
 
-   ``` javascript
-   {
-     "statute": "21.12.140",
-     "retrieve": ["compliance"],
-     "observed_data": {
-       "water_pressure": {
-         "location": { 
-           "to property line": {
-             "value": 30,
-             "units": "psi"
-           }
-         }
-       }
-     }
-   }
-   ```
+``` javascript
+{
+  "statute": "21.12.140",
+  "retrieve": ["compliance"],
+  "observed_data": {
+    "water_pressure": {
+      "location": { 
+        "to property line": {
+          "value": 30,
+          "units": "psi"
+        }
+      }
+    }
+  }
+}
+```
 
-   HTTP Response (with the result being that the data parameters are in compliance):
+HTTP Response (with the result being that the data parameters are in compliance):
 
-   ``` javascript
-   {
-     "statute": "21.12.140",
-     "compliance": true
-   }
-   ```
+``` javascript
+{
+  "statute": "21.12.140",
+  "compliance": true
+}
+```
