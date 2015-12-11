@@ -1,8 +1,8 @@
 # Purpose
 
-The Statute Validator has three purposes:
-
-1. Retrieve the text of a statute.
+## The Statute Validator has three purposes:
+ 
+#### Retrieve the text of a statute.
 
 Example: Get the text of Title 21 Chapter 21.04.080.
 
@@ -27,7 +27,7 @@ HTTP Response:
 }
 ```
 
-1. Retrieve the requirements of a statute that has corresponding quantitative requirements.
+#### Retrieve the requirements of a statute that has corresponding quantitative requirements.
 
 Example: Get the requirements of Title 21 Chapter 21.12.140.
 
@@ -95,8 +95,8 @@ HTTP Response:
  
 ```
 
-1. Determine if you are in compliance with the law by submitting relevant quantitative data 
-   for a given statute.
+#### Determine if you are in compliance with the law by submitting relevant quantitative data 
+for a given statute.
 
    Example: Provide the requirements of Title 21 Chapter 21.12.140 and determine compliance.
 
