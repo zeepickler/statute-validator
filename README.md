@@ -43,8 +43,8 @@ HTTP Response:
 ``` javascript
 {
   "statute": "21.12.140",
-  "water_pressure": {
-    "requirements": {
+  "requirements": {
+    "water_pressure": {
       "location": {
         "to property line": {
           "value": { "minimum": 20 },
@@ -70,8 +70,11 @@ HTTP Response:
           "units": "psi",
           "requires": "A pressure reducing device for on-site domestic water systems."
         }
-      },
-    "optional": {
+      }
+    }
+  },
+  "optional": {
+    "water_pressure": {
       "location": {
         "service": {
           "value": { "minimum": 20,
@@ -86,11 +89,8 @@ HTTP Response:
         }
       }
     }
-
   }
 }
-
- 
 ```
 
 #### Determine if you are in compliance with the law by submitting relevant quantitative data for a given statute.
