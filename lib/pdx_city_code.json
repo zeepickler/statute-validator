@@ -28,20 +28,19 @@
     "requirements":{
       "excludes": [
         
-        {"value": {"minimum": "18:00",
-                   "maximum": "07:00"},
+        {"value": [{"minimum": "18:00", "maximum": "24:00"},
+                   {"minimum": "00:00", "maximum": "07:00"}
+                  ],
          "units": "time",
          "when": "daily",
          "source": "all" },
-        {"value": {"minimum": "07:00",
-                   "maximum": "18:00"},
+        {"value": {"minimum": "07:00", "maximum": "18:00"},
          "units": "time",
          "when": "Sunday",
          "source": "all"}
       ],
       "includes": {
-        "value": {"minimum": "00:00",
-                  "maximum": "24:00"},
+        "value": {"minimum": "00:00", "maximum": "24:00"},
         "units": "time",
         "when": "legal holidays",
         "source": "all",
@@ -64,28 +63,57 @@
   "18.10.060.D": {
     "text": "All equipment used in commercial activities shall have sound control devices no less   
       effective than those provided on the original equipment, and no equipment shall have an 
-      unmuffled exhaust.",
-    "requirements":{}
+      unmuffled exhaust."
   },
   "18.10.060.E": {
     "text": "All equipment used in commercial construction activities shall comply with pertinent 
-      standards of the U.S. Environmental Protection Agency.",
-    "requirements":{}
+      standards of the U.S. Environmental Protection Agency."
   },
-
-//F.  Pile Drivers:
 
   "18.10.060.F.1": {
     "text": "Notwithstanding Subsection B above, the permissible sound levels of Section 18.10.010 
       shall apply to pile drivers from 6 p.m. to 8 a.m. the following morning, and 6 p.m. Friday 
       to 8 a.m. the following Monday, and on legal holidays.",
-    "requirements":{}
+    "requirements":{
+      "sources": ["pile drivers"],
+      "refer_to_section": [
+        {"section":"self",
+         "requires":[{"section": "18.10.010.B"}]}
+      ],
+      "excludes": [
+        {"values": [{"minimum":"18:00", "maximum":"24:00"},
+                    {"minimum":"00:00", "maximum":"08:00"}
+                   ],
+         "units": "time",
+         "when": "daily"
+        },
+        {"values": [{"minimum":"08:00", "maximum": "18:00"}],
+         "units": "time",
+         "when": ["Saturday","Sunday"]
+        },
+        {"values": [{"minimum":"00:00", "maximum": "24:00"}],
+         "units": "time",
+         "when": "legal holidays"
+        }
+      ]
+    }
   },
   "18.10.060.F.2": {
     "text": "The owner of a site on which pile driving will occur shall cause a notice to be mailed to 
       all residences within 500 feet of the site.  Mailing will occur no fewer than 30 days prior to 
       the commencement of pile driving.  The notice shall list the expected starting and ending dates 
       for pile driving and give a telephone number for further information.",
-    "requirements":{}
+    "requirements":{
+      "source": ["site with pile drivers"],
+      "location": {
+        "residence": {
+          "values": {"maximum": 500},
+          "units": "feet",
+          "requires": "A notice to be mailed to residence. Mailing will occur no fewer than 30 days prior to 
+          the commencement of pile driving.  The notice shall list the expected starting and ending dates 
+          for pile driving and give a telephone number for further information."
+        }
+      }
+    }
   }
 }
