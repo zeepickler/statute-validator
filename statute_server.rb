@@ -74,6 +74,72 @@ def return_data(data)
   data.to_json
 end
 
-def determine_compliance(requirements, data)
+# EXAMPLE ########
+requirements = [
+      {"source": ["trucks",
+                  "pile drivers", 
+                  "pavement breakers", 
+                  "scrapers", 
+                  "concrete saws", 
+                  "rock drills"],
+       "value": [{"maximum": 85}],
+       "units": "dBA",
+       "conditional": "exclude"}
+    ]
 
+observed_data = {
+  "source": "truck",
+  "value": 40,
+  "units": "dBA"
+}
+##################
+
+def extract_relavent_data(data)
+  data.select{|k,v| ["source","value","units","location", "when"].include?(k) }
+end
+
+def is_within_constraints?(conditional, requirement, data)
+  requirement = extract_relavent_data(requirement)
+  data = extract_relavent_data(data)
+
+  unless requirement["source"].include?(data["source"])
+    return nil
+  end
+  unless requirement["units"] == data["units"]
+    return nil
+  end
+
+  outcome = []
+  requirement["value"].each do |conditional, value|
+    case conditional
+    when "minimum"
+      result = data["value"] >= value ? true : false
+    when "maximum"
+      result = data["value"] <= value ? true : false 
+    end
+    outcome << result
+  end
+  overall_outcome = outcome.all?{|x| x == true }
+
+  case conditional
+  when "include"
+    return overall_outcome ? true : false
+  when "exclude"
+    return overall_outcome ? false : true
+  end
+  
+end
+
+def determine_compliance(requirements, data)
+  outcome = []
+  requirements.each do |requirement|
+    if requirement["conditional"]
+      result = is_within_constraints?(requirement["conditional"], requirement, data)
+    end
+    if requirement["refer_to_section"]
+      # do stuff
+    end
+    outcome << result
+  end
+  return outcome.all?{|x| x == true }
 end
