@@ -95,7 +95,7 @@ observed_data = {
 ##################
 
 def extract_relavent_data(data)
-  data.select{|k,v| ["source","value","units","location", "when"].include?(k) }
+  data.select{|k,v| ["source","value","units","location","when","requires"].include?(k) }
 end
 
 def is_within_constraints?(conditional, requirement, data)
@@ -137,7 +137,6 @@ def determine_compliance(requirements, data)
       result = is_within_constraints?(requirement["conditional"], requirement, data)
     end
     if requirement["refer_to_section"]
-      # do stuff
     end
     outcome << result
   end
