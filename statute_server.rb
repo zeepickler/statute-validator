@@ -59,7 +59,11 @@ get '/' do
     if statute_requirements.nil?
       return return_error_msg("The #{@routes[1]} for this statute to determine #{@routes[2]} was missing.")
     end
-    payload[@routes[2]] = determine_compliance(statute_requirements, observed_data)
+    outcome, required_actions = determine_compliance(statute_requirements, observed_data)
+    payload[@routes[2]] = outcome
+    unless required_actions.empty?
+      payload["required_actions"] = required_actions
+    end
   end
   return return_data(payload)
 end
@@ -95,7 +99,7 @@ observed_data = {
 ##################
 
 def extract_relavent_data(data)
-  data.select{|k,v| ["source","value","units","location","when","requires"].include?(k) }
+  data.select{|k,v| ["source","value","units","location","when","conditional","refer_to_section","required_action"].include?(k) }
 end
 
 def is_within_constraints?(conditional, requirement, data)
@@ -123,22 +127,31 @@ def is_within_constraints?(conditional, requirement, data)
 
   case conditional
   when "include"
-    return overall_outcome ? true : false
+    if overall_outcome
+      return true, requirement["required_action"]
+    else
+      return false, nil
+    end
   when "exclude"
-    return overall_outcome ? false : true
+    if overall_outcome
+      return false, nil
+    else
+      return true, requirement["required_action"]
+    end
   end
   
 end
 
 def determine_compliance(requirements, data)
   outcome = []
+  required_actions = []
   requirements.each do |requirement|
     if requirement["conditional"]
-      result = is_within_constraints?(requirement["conditional"], requirement, data)
-    end
-    if requirement["refer_to_section"]
+      result, required_action = is_within_constraints?(requirement["conditional"], requirement, data)
     end
     outcome << result
+    required_actions << required_action if required_action
   end
-  return outcome.all?{|x| x == true }
+  overall_outcome = outcome.all?{|x| x == true }
+  return overall_outcome, required_actions
 end

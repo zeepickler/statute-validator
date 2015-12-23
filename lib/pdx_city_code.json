@@ -6,7 +6,8 @@
       pavement breakers, scrapers, concrete saws and rock drills.",
 
     "requirements": [
-      {"source": ["truck",
+      {"conditional":"exclude",
+       "source": ["truck",
                   "pile driver", 
                   "pavement breaker", 
                   "scraper", 
@@ -14,7 +15,7 @@
                   "rock drill"],
        "value": [{"maximum": 85}],
        "units": "dBA",
-       "conditional":"exclude"}
+       }
     ]
   },
   "18.10.060.B": {
@@ -26,34 +27,35 @@
       public road within a zone shall be considered as taking place on private property within that 
       zone.",
     "requirements":[       
-      {"source": ["all"],
+      {"conditional":"exclude",
+       "source": ["all"],
        "value": [{"minimum": "18:00", "maximum": "24:00"},
                  {"minimum": "00:00", "maximum": "07:00"}],
        "units": "time",
-       "when": "daily",
-       "conditional":"exclude"},
-      {"source": ["all"],
+       "when": "daily"},
+      {"conditional":"exclude",
+       "source": ["all"],
        "value": {"minimum": "07:00", "maximum": "18:00"},
        "units": "time",
-       "when": ["Sunday"],
-       "conditional":"exclude"},
-      {"source": ["all"],
-      "value": {"minimum": "00:00", "maximum": "24:00"},
-      "units": "time",
-      "when": ["legal holidays"],
-      "conditional": "include",
-      "refer_to_section": [{"section":"self","requires":[{"section":"18.10.010"}]}]}
+       "when": ["Sunday"]},
+      {"conditional":"include",
+       "source": ["all"],
+       "value": {"minimum": "00:00", "maximum": "24:00"},
+       "units": "time",
+       "when": ["legal holidays"],
+       "refer_to_section": [{"section":"self","requires":[{"section":"18.10.010"}]}]}
     ]
   },
   "18.10.060.C": {
     "text": "The adjustments to permissible sound levels established in Section 18.10.010 B apply to 
       Subsections A and B above.",
     "requirements": [
-      {"refer_to_section": [
-         {"section":"18.10.060.A",
-          "requires": [{"section": "18.10.010.B"}]},
-         {"section":"18.10.060.B",
-          "requires": [{"section": "18.10.010.B"}]}]}
+      {"refer_to_section": [{"section":"18.10.060.A",
+                             "requires": [{"section": "18.10.010.B"}]},
+                            {"section":"18.10.060.B",
+                             "requires": [{"section": "18.10.010.B"}]}
+                            ]
+      }
     ]
   },
   "18.10.060.D": {
@@ -70,25 +72,26 @@
       shall apply to pile drivers from 6 p.m. to 8 a.m. the following morning, and 6 p.m. Friday 
       to 8 a.m. the following Monday, and on legal holidays.",
     "requirements":[
-      
       {"refer_to_section": [{"section":"self",
-                             "requires":[{"section": "18.10.010.B"}]}]},
-      {"sources": ["pile driver"],
+                             "requires":[{"section": "18.10.010.B"}]}
+                            ]
+      },
+      {"conditional": "exclude",
+       "sources": ["pile driver"],
        "values": [{"minimum":"18:00", "maximum":"24:00"},
                   {"minimum":"00:00", "maximum":"08:00"}],
        "units": "time",
-       "when": ["daily"],
-       "conditional": "exclude"},
-      {"sources": ["pile driver"],
+       "when": ["daily"]},
+      {"conditional": "exclude",
+       "sources": ["pile driver"],
        "values": [{"minimum":"08:00", "maximum": "18:00"}],
        "units": "time",
-       "when": ["Saturday","Sunday"],
-       "conditional": "exclude"},
-      {"sources": ["pile driver"],
+       "when": ["Saturday","Sunday"]},
+      {"conditional": "exclude",
+       "sources": ["pile driver"],
        "values": [{"minimum":"00:00", "maximum": "24:00"}],
        "units": "time",
-       "when": ["legal holidays"],
-       "conditional": "exclude"}
+       "when": ["legal holidays"]}
     ]
   },
   "18.10.060.F.2": {
@@ -97,14 +100,14 @@
       the commencement of pile driving.  The notice shall list the expected starting and ending dates 
       for pile driving and give a telephone number for further information.",
     "requirements":[
-      {"source": ["pile driver construction site"],
-        "values": [{"maximum": 500}],
-        "units": "feet",
-        "location": "residence",
-        "conditional": "include",
-        "requires": "A notice to be mailed to residence. Mailing will occur no fewer than 30 days prior to 
-        the commencement of pile driving.  The notice shall list the expected starting and ending dates 
-        for pile driving and give a telephone number for further information."}
+      {"conditional": "include",
+       "source": ["pile driver construction site"],
+       "values": [{"maximum": 500}],
+       "units": "feet",
+       "location": "residence",
+       "required_action": "A notice to be mailed to residence. Mailing will occur no fewer than 30 days prior to 
+       the commencement of pile driving.  The notice shall list the expected starting and ending dates 
+       for pile driving and give a telephone number for further information."}
     ]
   }
 }
