@@ -90,14 +90,8 @@ class StatuteApi < Sinatra::Base
     return return_data(payload_array)
   end
 
-  get '/derp' do
-    content_type :json
-    status 200
-    {"foo" => "bar"}.to_json
-  end
-
   def error_msg(msg)
-    {error: msg}
+    {error: msg}.to_json
   end
 
   def return_data(data)
