@@ -13,26 +13,26 @@ class StatuteApi < Sinatra::Base
 
   get '/' do
     content_type :json
-    data = request.body.read
-    if data == ""
+    data = params.select{|k,v| ["statute", "retrieve", "observed_data"]}
+    if data.empty?
       status 400
-      return error_msg("No JSON data found.")
+      return {errors: ["No JSON data found."]}.to_json
     end
     
-    data_array = JSON.parse(data)
     payload_array = []
 
-    data_array.each do |data|
+    data["statutes"].each do |data|
       payload = {}
       payload["errors"] = []
 
-      statute = data["statue"]
+      statute = data["statute"]
 
       if statute.nil? || statute.empty?
-        payload_array << error_msg("A statute is not specified.")
+        payload["errors"] << "A statute was not specified."
+        payload_array << payload
         next
       elsif @statutes[statute].nil?
-        payload["errors"] << error_msg("The statute \'#{statute}\' was not found.")
+        payload["errors"] << "The statute \'#{statute}\' was not found."
         payload_array << payload
         next
       else
@@ -42,14 +42,14 @@ class StatuteApi < Sinatra::Base
       retrieve = data["retrieve"]
 
       if retrieve.nil? || retrieve.empty? || (@routes & retrieve).empty?
-        payload["errors"] << error_msg("The \'retrieve\' value is not specified.")
+        payload["errors"] << "The \'retrieve\' value is not specified."
         payload_array << payload
         next
       end
       if retrieve.include?(@routes[0])
         statute_text = @statutes[data["statute"]][@routes[0]]
         if statute_text.nil?
-          payload["errors"] << error_msg("The #{@routes[0]} for this statue was not found.")
+          payload["errors"] << "The #{@routes[0]} for this statute was not found."
           payload_array << payload
           next
         else
@@ -59,7 +59,7 @@ class StatuteApi < Sinatra::Base
       if retrieve.include?(@routes[1])
         statute_requirements = @statutes[data["statute"]][@routes[1]]
         if statute_requirements.nil?
-          payload["errors"] << error_msg("The #{@routes[1]} for this statute were not found.")
+          payload["errors"] << "The #{@routes[1]} for this statute were not found."
           payload_array << payload
           next
         else
@@ -69,13 +69,13 @@ class StatuteApi < Sinatra::Base
       if retrieve.include?(@routes[2])
         observed_data = data["observed_data"]
         if observed_data.nil?
-          payload["errors"] << error_msg("The observed_data was missing and is required to determine #{@routes[2]}.")
+          payload["errors"] << "The observed_data was missing and is required to determine #{@routes[2]}."
           payload_array << payload
           next
         end
         statute_requirements = @statutes[data["statute"]][@routes[1]]
         if statute_requirements.nil?
-          payload["errors"] << error_msg("The #{@routes[1]} for this statute to determine #{@routes[2]} was missing.")
+          payload["errors"] << "The #{@routes[1]} for this statute to determine #{@routes[2]} was missing."
           payload_array << payload
           next
         end
@@ -88,10 +88,6 @@ class StatuteApi < Sinatra::Base
       payload_array << payload
     end
     return return_data(payload_array)
-  end
-
-  def error_msg(msg)
-    {error: msg}.to_json
   end
 
   def return_data(data)
