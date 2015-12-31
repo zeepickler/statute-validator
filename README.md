@@ -7,22 +7,22 @@ Example: Get the text of Title 21 Chapter 21.04.080.
 HTTP GET with JSON data:
 
 ``` javascript
-{
+[{
  statute: "21.04.080",
  retrieve: ["text"]
-}
+}]
 ```
 
 HTTP Response:
 
 ``` javascript
-{
+[{
  statute: "21.04.080",
  text: `The Chief Engineer is a Licensed Professional Engineer in charge of the Bureau
  engineering staff. The Chief Engineer, or the Chief Engineer's designee, is responsible
  for establishing, maintaining, and enforcing engineering and technical standards for
  design and construction of the water system.`
-}
+}]
 ```
 
 #### Retrieve the requirements of a statute that has corresponding quantitative requirements.
@@ -32,16 +32,16 @@ Example: Get the requirements of Title 21 Chapter 21.12.140.
 HTTP GET with JSON data:
 
 ``` javascript
-{
+[{
  "statute": "21.12.140",
  "retrieve": ["requirements"]
-}
+}]
 ```
 
 HTTP Response:
 
 ``` javascript
-{
+[{
   "statute": "21.12.140",
   "requirements": {
     "water_pressure": {
@@ -90,7 +90,7 @@ HTTP Response:
       }
     }
   }
-}
+}]
 ```
 
 #### Determine if you are in compliance with the law by submitting relevant quantitative data for a given statute.
@@ -100,7 +100,7 @@ Example: Provide observed data for Title 21 Chapter 21.12.140 and determine comp
 HTTP GET with JSON data:
 
 ``` javascript
-{
+[{
   "statute": "21.12.140",
   "retrieve": ["compliance"],
   "observed_data": {
@@ -113,14 +113,14 @@ HTTP GET with JSON data:
       }
     }
   }
-}
+}]
 ```
 
 HTTP Response (with the result being that the data parameters are in compliance):
 
 ``` javascript
-{
+[{
   "statute": "21.12.140",
   "compliance": true
-}
+}]
 ```

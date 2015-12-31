@@ -6,7 +6,7 @@
       pavement breakers, scrapers, concrete saws and rock drills.",
 
     "requirements": [
-      {"conditional":"exclude",
+      {"conditional":"include",
        "source": ["truck",
                   "pile driver", 
                   "pavement breaker", 
