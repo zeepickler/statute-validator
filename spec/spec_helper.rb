@@ -17,8 +17,7 @@
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 require 'rack/test'
-
-ENV['STATUTE_SOURCE_FILE'] = '../lib/pdx_city_code.json'
+ENV['STATUTE_SOURCE_FILE'] = './lib/pdx_city_code.json'
 require File.expand_path '../../app/statute_api.rb', __FILE__
 
 ENV['RACK_ENV'] = 'test'

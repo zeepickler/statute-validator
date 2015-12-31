@@ -7,7 +7,7 @@ class StatuteApi < Sinatra::Base
   # -X POST -d '{"foo":"bar"}' http://localhost:4567/
 
   before do
-    @statutes = JSON.parse(File.open(ENV["STATUTE_SOURCE_FILE"]))
+    @statutes = JSON.parse(File.read(ENV["STATUTE_SOURCE_FILE"]))
     @routes = ["text","requirements","compliance"]
   end
 
@@ -15,6 +15,7 @@ class StatuteApi < Sinatra::Base
     content_type :json
     data = request.body.read
     if data == ""
+      status 400
       return error_msg("No JSON data found.")
     end
     
