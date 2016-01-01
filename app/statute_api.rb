@@ -85,13 +85,14 @@ class StatuteApi < Sinatra::Base
           payload["required_actions"] = required_actions
         end
       end
+      payload.delete("errors") if payload["errors"].empty?
       payload_array << payload
     end
     return return_data(payload_array)
   end
 
   def return_data(data)
-    if data.any?{|d| !d["errors"].empty? }
+    if data.any?{|d| !d["errors"].nil? && !d["errors"].empty? }
       status 400
     else
       status 200

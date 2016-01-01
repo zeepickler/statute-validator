@@ -48,6 +48,13 @@ RSpec.describe StatuteApi do
           expect(last_response.status).to eq 400
           expect(last_response.body).to eq expected
         end
+        it "returns the text for a valid statute with text when supplied with a valid statute and retrieve text" do
+          get "/", {statutes: [{statute: "12.34.567.A", retrieve: ["text"]}]}
+          expected = [{statute: "12.34.567.A", text: "Example of a valid statute."}].to_json
+
+          expect(last_response.status).to eq 200
+          expect(last_response.body).to eq expected
+        end
       end
       describe "requirements" do
         it "returns an error message JSON if the JSON data does not have a requirements attribute" do
@@ -55,6 +62,13 @@ RSpec.describe StatuteApi do
           expected = [{errors: ["The requirements for this statute were not found."], statute: "99.99.999.A"}].to_json
 
           expect(last_response.status).to eq 400
+          expect(last_response.body).to eq expected
+        end
+        it "returns the requirements for a valid statute with requirements when supplied with a valid statute and retrieve requirements" do
+          get "/", {statutes: [{statute: "12.34.567.A", retrieve: ["requirements"]}]}
+          expected = [{statute: "12.34.567.A", requirements: [{conditional:"include",source: ["cats","dogs"],value: [{maximum: 85}],units: "dBA"}]}].to_json
+        
+          expect(last_response.status).to eq 200
           expect(last_response.body).to eq expected
         end
       end
