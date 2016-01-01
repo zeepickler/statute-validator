@@ -66,7 +66,7 @@ RSpec.describe StatuteApi do
         end
         it "returns the requirements for a valid statute with requirements when supplied with a valid statute and retrieve requirements" do
           get "/", {statutes: [{statute: "12.34.567.A", retrieve: ["requirements"]}]}
-          expected = [{statute: "12.34.567.A", requirements: [{conditional:"include",source: ["cats","dogs"],value: [{maximum: 85}],units: "dBA"}]}].to_json
+          expected = [{statute: "12.34.567.A", requirements: [{conditional:"include",sources: ["cats","dogs"],value: [{maximum: 85}],units: "dBA"}]}].to_json
         
           expect(last_response.status).to eq 200
           expect(last_response.body).to eq expected
@@ -103,7 +103,7 @@ RSpec.describe StatuteApi do
         it "returns true for a valid statute when supplied with valid statute, retrieve compliance parameter, and observed_data that is within the requirements" do
           get "/", {statutes: [{statute: "12.34.567.A", 
                                 retrieve: ["compliance"], 
-                                observed_data: {source: "cats", 
+                                observed_data: {sources: ["cats"], 
                                                 value: 65,
                                                 units: "dBA"}
                                 }]}
@@ -114,7 +114,7 @@ RSpec.describe StatuteApi do
         it "returns false for a valid statute when supplied with valid statute, retrieve compliance parameter, and observed_data that is not within the requirements" do
           get "/", {statutes: [{statute: "12.34.567.A",
                                 retrieve: ["compliance"],
-                                observed_data: {source: "cats",
+                                observed_data: {sources: ["cats"],
                                                 value: 95,
                                                 units: "dBA"}
                                 }]}

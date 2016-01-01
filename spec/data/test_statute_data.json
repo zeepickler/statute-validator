@@ -3,7 +3,7 @@
     "text": "Example of a valid statute.",
     "requirements": [
       {"conditional":"include",
-       "source": ["cats",
+       "sources": ["cats",
                   "dogs"],
        "value": [{"maximum": 85}],
        "units": "dBA"}

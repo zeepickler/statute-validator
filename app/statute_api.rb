@@ -2,10 +2,6 @@ require 'sinatra'
 require 'json'
 
 class StatuteApi < Sinatra::Base
-  # example:
-  # curl -H "Content-Type: application/json" 
-  # -X POST -d '{"foo":"bar"}' http://localhost:4567/
-
   before do
     @statutes = JSON.parse(File.read(ENV["STATUTE_SOURCE_FILE"]))
     @routes = ["text","requirements","compliance"]
@@ -100,39 +96,19 @@ class StatuteApi < Sinatra::Base
     data.to_json
   end
 
-  # EXAMPLE ########
-  #requirements = [
-  #      {"source": ["trucks",
-  #                  "pile drivers", 
-  #                  "pavement breakers", 
-  #                  "scrapers", 
-  #                  "concrete saws", 
-  #                  "rock drills"],
-  #       "value": [{"maximum": 85}],
-  #       "units": "dBA",
-  #       "conditional": "exclude"}
-  #    ]
-#
-  #observed_data = {
-  #  "source": "truck",
-  #  "value": 40,
-  #  "units": "dBA"
-  #}
-  ##################
-
   def extract_relavent_data(data)
-    data.select{|k,v| ["source","value","units","location","when","conditional","refer_to_section","required_action"].include?(k) }
+    data.select{|k,v| ["sources","value","units","location","when","conditional","refer_to_section","required_action"].include?(k) }
   end
 
   def is_within_constraints?(conditional, requirement, data)
     requirement = extract_relavent_data(requirement)
     data = extract_relavent_data(data)
 
-    unless requirement["source"].include?(data["source"])
-      return nil
+    unless (requirement["sources"] & data["sources"]) == data["sources"]
+      return false, nil
     end
     unless requirement["units"] == data["units"]
-      return nil
+      return false, nil
     end
 
     outcome = []
@@ -171,7 +147,6 @@ class StatuteApi < Sinatra::Base
     requirements.each do |requirement|
       if requirement["conditional"]
         result, required_action = is_within_constraints?(requirement["conditional"], requirement, data)
-
       end
       outcome << result
       required_actions << required_action if required_action
