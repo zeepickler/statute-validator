@@ -42,7 +42,7 @@ class StatuteApi < Sinatra::Base
       retrieve = data["retrieve"]
 
       if retrieve.nil? || retrieve.empty? || (@routes & retrieve).empty?
-        payload["errors"] << "The \'retrieve\' value is not specified."
+        payload["errors"] << "The \'retrieve\' parameter was not specified."
         payload_array << payload
         next
       end
