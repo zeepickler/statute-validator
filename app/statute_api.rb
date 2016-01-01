@@ -136,8 +136,10 @@ class StatuteApi < Sinatra::Base
     end
 
     outcome = []
-    requirement["value"].each do |conditional, value|
-      case conditional
+    requirement["value"].each do |restraint_hash|
+      restraint = restraint_hash.keys.first
+      value = restraint_hash.values.first.to_s
+      case restraint
       when "minimum"
         result = data["value"] >= value ? true : false
       when "maximum"
@@ -161,7 +163,6 @@ class StatuteApi < Sinatra::Base
         return true, requirement["required_action"]
       end
     end
-    
   end
 
   def determine_compliance(requirements, data)
@@ -170,6 +171,7 @@ class StatuteApi < Sinatra::Base
     requirements.each do |requirement|
       if requirement["conditional"]
         result, required_action = is_within_constraints?(requirement["conditional"], requirement, data)
+
       end
       outcome << result
       required_actions << required_action if required_action

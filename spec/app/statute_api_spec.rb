@@ -100,6 +100,28 @@ RSpec.describe StatuteApi do
           expect(last_response.status).to eq 400
           expect(last_response.body).to eq expected
         end
+        it "returns true for a valid statute when supplied with valid statute, retrieve compliance parameter, and observed_data that is within the requirements" do
+          get "/", {statutes: [{statute: "12.34.567.A", 
+                                retrieve: ["compliance"], 
+                                observed_data: {source: "cats", 
+                                                value: 65,
+                                                units: "dBA"}
+                                }]}
+          expected = [{statute: "12.34.567.A", compliance: true}].to_json
+          expect(last_response.status).to eq 200
+          expect(last_response.body).to eq expected
+        end
+        it "returns false for a valid statute when supplied with valid statute, retrieve compliance parameter, and observed_data that is not within the requirements" do
+          get "/", {statutes: [{statute: "12.34.567.A",
+                                retrieve: ["compliance"],
+                                observed_data: {source: "cats",
+                                                value: 95,
+                                                units: "dBA"}
+                                }]}
+          expected = [{statute: "12.34.567.A", compliance: false}].to_json
+          expect(last_response.status).to eq 200
+          expect(last_response.body).to eq expected
+        end
       end
     end
   end
