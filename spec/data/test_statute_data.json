@@ -1,0 +1,14 @@
+{
+  "12.34.567.A": {
+    "text": "Example of a valid statute.",
+    "requirements": [
+      {"conditional":"include",
+       "source": ["cats",
+                  "dogs"],
+       "value": [{"maximum": 85}],
+       "units": "dBA"}
+    ]
+  },
+  "99.99.999.A": {
+  }
+}

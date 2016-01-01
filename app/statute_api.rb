@@ -68,14 +68,14 @@ class StatuteApi < Sinatra::Base
       end
       if retrieve.include?(@routes[2])
         observed_data = data["observed_data"]
-        if observed_data.nil?
+        if observed_data.nil? || observed_data.empty?
           payload["errors"] << "The observed_data was missing and is required to determine #{@routes[2]}."
           payload_array << payload
           next
         end
         statute_requirements = @statutes[data["statute"]][@routes[1]]
         if statute_requirements.nil?
-          payload["errors"] << "The #{@routes[1]} for this statute to determine #{@routes[2]} was missing."
+          payload["errors"] << "The #{@routes[1]} for this statute to determine #{@routes[2]} were missing."
           payload_array << payload
           next
         end
