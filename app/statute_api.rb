@@ -86,6 +86,7 @@ class StatuteApi < Sinatra::Base
       payload.delete("errors") if payload["errors"].empty?
       payload_array << payload
     end
+
     unless refer_to_section_array.empty?
       dependant_results = []
       refer_to_section_array.each do |refer_to_section|
@@ -104,6 +105,7 @@ class StatuteApi < Sinatra::Base
           end
         end
       end
+
       payload_array.map! do |payload|
         unless payload["refer_to_section_compliance"].nil?
           unless payload["compliance"] == false
@@ -175,6 +177,7 @@ class StatuteApi < Sinatra::Base
     outcome = []
     required_actions = []
     refer_to_section = []
+
     requirements.each do |requirement|
       if requirement["conditional"]
         result, required_action = is_within_constraints?(requirement["conditional"], requirement, data)
@@ -185,10 +188,12 @@ class StatuteApi < Sinatra::Base
         refer_to_section += requirement["refer_to_section"]
       end
     end
+
     if outcome.empty? && !refer_to_section.empty?
       outcome = [true]
     end
     overall_outcome = outcome.all?{|x| x == true }
+    
     return overall_outcome, required_actions, refer_to_section
   end
 end

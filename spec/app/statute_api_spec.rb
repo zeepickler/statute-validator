@@ -169,6 +169,40 @@ RSpec.describe StatuteApi do
               expect(last_response.status).to eq 200
               expect(last_response.body).to eq expected
             end
+            it "should determine local compliance is false when valid data is supplied locally outside the requirements but dependent section is inside the requirements" do
+              get "/", {statutes: [{statute: "22.22.222.B",
+                                    retrieve: ["compliance"],
+                                    observed_data: {sources: ["right_hand"],
+                                                    value: 8,
+                                                    units: "fingers"}},
+                                    {statute: "22.22.222.C",
+                                     retrieve: ["compliance"],
+                                     observed_data: {sources: ["left_hand"],
+                                                     value: 4,
+                                                     units: "fingers"}}]}
+              expected = {statutes: [{statute: "22.22.222.B", compliance: false},
+                                     {statute: "22.22.222.C", compliance: true}]}.to_json
+
+              expect(last_response.status).to eq 200
+              expect(last_response.body).to eq expected
+            end
+            it "should determine local compliance is false when valid data is supplied locally inside the requirements but dependent section is outside the requirements" do
+              get "/", {statutes: [{statute: "22.22.222.B",
+                                    retrieve: ["compliance"],
+                                    observed_data: {sources: ["right_hand"],
+                                                    value: 4,
+                                                    units: "fingers"}},
+                                    {statute: "22.22.222.C",
+                                     retrieve: ["compliance"],
+                                     observed_data: {sources: ["left_hand"],
+                                                     value: 8,
+                                                     units: "fingers"}}]}
+              expected = {statutes: [{statute: "22.22.222.B", compliance: false},
+                                     {statute: "22.22.222.C", compliance: false}]}.to_json
+
+              expect(last_response.status).to eq 200
+              expect(last_response.body).to eq expected
+            end
           end
         end
       end
