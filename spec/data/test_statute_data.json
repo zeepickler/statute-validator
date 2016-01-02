@@ -11,13 +11,17 @@
   },
   "99.99.999.A": {
   },
+  "99.99.999.B": {
+    "text": "Example with requirements.",
+    "requirements": [{"conditional":"foo"}]
+  },
   "22.22.222.A": {
     "text": "Example of a statute with a dependency and no internal conditional requirements.",
     "requirements": [
       {"refer_to_section": [{"statute": "22.22.222.A", "requires": [{"statute": "22.22.222.C"}] }]}
     ]
   },
-  "22.22.222.B":{
+  "22.22.222.B": {
     "text": "Example of a statute with a dependency and an internal conditional requirement.",
     "requirements": [
       {"refer_to_section": [{"statute": "22.22.222.A", "requires": [{"statute": "22.22.222.C"}] }]},
@@ -27,7 +31,7 @@
        "units": "fingers"}
     ]
   },
-  "22.22.222.C" : {
+  "22.22.222.C": {
     "text": "Example of a dependent statute.",
     "requirements": [
       {"conditional": "include",

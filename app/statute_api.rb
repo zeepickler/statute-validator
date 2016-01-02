@@ -64,17 +64,22 @@ class StatuteApi < Sinatra::Base
         end
       end
       if retrieve.include?(@routes[2])
-        observed_data = data["observed_data"]
-        if observed_data.nil? || observed_data.empty?
-          payload["errors"] << "The observed_data was missing and is required to determine #{@routes[2]}."
-          payload_array << payload
-          next
-        end
         statute_requirements = @statutes[data["statute"]][@routes[1]]
         if statute_requirements.nil?
           payload["errors"] << "The #{@routes[1]} for this statute to determine #{@routes[2]} were missing."
           payload_array << payload
           next
+        end
+        conditionals = statute_requirements.select{|r| r.keys.include?("conditional") }
+        if conditionals.empty?
+          observed_data = nil
+        else
+          observed_data = data["observed_data"]
+          if observed_data.nil? || observed_data.empty?
+            payload["errors"] << "The observed_data was missing and is required to determine #{@routes[2]}."
+            payload_array << payload
+            next
+          end
         end
         outcome, required_actions, refer_to_section = determine_compliance(statute_requirements, observed_data)
         refer_to_section_array = (refer_to_secton_array & refer_to_section) unless refer_to_section.empty?

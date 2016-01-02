@@ -74,21 +74,21 @@ RSpec.describe StatuteApi do
       end
       describe "compliance" do
         it "returns an error message JSON if the compliance parameter is specified but the observed_data parameter is not specified" do
-          get "/", {statutes: [{statute: "99.99.999.A", retrieve: ["compliance"]}]}
-          expected = {statutes: [{errors: ["The observed_data was missing and is required to determine compliance."], statute: "99.99.999.A"}]}.to_json
+          get "/", {statutes: [{statute: "99.99.999.B", retrieve: ["compliance"]}]}
+          expected = {statutes: [{errors: ["The observed_data was missing and is required to determine compliance."], statute: "99.99.999.B"}]}.to_json
         
           expect(last_response.status).to eq 400
           expect(last_response.body).to eq expected
         end
         it "returns an error message JSON if the compliance parameter is specified but the observed_data parameter value is nil or empty" do
-          get "/", {statutes: [{statute: "99.99.999.A", retrieve: ["compliance"], observed_data: nil}]}
-          expected = {statutes: [{errors: ["The observed_data was missing and is required to determine compliance."], statute: "99.99.999.A"}]}.to_json
+          get "/", {statutes: [{statute: "99.99.999.B", retrieve: ["compliance"], observed_data: nil}]}
+          expected = {statutes: [{errors: ["The observed_data was missing and is required to determine compliance."], statute: "99.99.999.B"}]}.to_json
 
           expect(last_response.status).to eq 400
           expect(last_response.body).to eq expected
 
-          get "/", {statutes: [{statute: "99.99.999.A", retrieve: ["compliance"], observed_data: {}}]}
-          expected = {statutes: [{errors: ["The observed_data was missing and is required to determine compliance."], statute: "99.99.999.A"}]}.to_json
+          get "/", {statutes: [{statute: "99.99.999.B", retrieve: ["compliance"], observed_data: {}}]}
+          expected = {statutes: [{errors: ["The observed_data was missing and is required to determine compliance."], statute: "99.99.999.B"}]}.to_json
 
           expect(last_response.status).to eq 400
           expect(last_response.body).to eq expected
@@ -105,9 +105,9 @@ RSpec.describe StatuteApi do
                                 retrieve: ["compliance"], 
                                 observed_data: {sources: ["cats"], 
                                                 value: 65,
-                                                units: "dBA"}
-                                }]}
+                                                units: "dBA"}}]}
           expected = {statutes: [{statute: "12.34.567.A", compliance: true}]}.to_json
+
           expect(last_response.status).to eq 200
           expect(last_response.body).to eq expected
         end
@@ -116,11 +116,26 @@ RSpec.describe StatuteApi do
                                 retrieve: ["compliance"],
                                 observed_data: {sources: ["cats"],
                                                 value: 95,
-                                                units: "dBA"}
-                                }]}
+                                                units: "dBA"}}]}
           expected = {statutes: [{statute: "12.34.567.A", compliance: false}]}.to_json
+
           expect(last_response.status).to eq 200
           expect(last_response.body).to eq expected
+        end
+        describe "refer_to_section" do
+          it "should determine compliance when there is no local conditional" do
+            get "/", {statutes: [{statute: "22.22.222.A", retrieve: ["compliance"]},
+                                 {statute: "22.22.222.C", 
+                                  retrieve: ["compliance"],
+                                  observed_data: {sources: ["left_hand"],
+                                                  value: 4,
+                                                  units: "fingers"}}]}
+            expected = {statutes: [{statute: "22.22.222.A", compliance: true},
+                                   {statute: "22.22.222.C", compliance: true}]}.to_json
+
+            expect(last_response.status).to eq 200
+            expect(last_response.body).to eq expected
+          end
         end
       end
     end
