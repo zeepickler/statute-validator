@@ -24,7 +24,7 @@
   "22.22.222.B": {
     "text": "Example of a statute with a dependency and an internal conditional requirement.",
     "requirements": [
-      {"refer_to_section": [{"statute": "22.22.222.A", "requires": [{"statute": "22.22.222.C"}] }]},
+      {"refer_to_section": [{"statute": "22.22.222.B", "requires": [{"statute": "22.22.222.C"}] }]},
       {"conditional": "include",
        "sources": ["right_hand"],
        "value": [{"maximum": 5}],

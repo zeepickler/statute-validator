@@ -123,18 +123,52 @@ RSpec.describe StatuteApi do
           expect(last_response.body).to eq expected
         end
         describe "refer_to_section" do
-          it "should determine compliance when there is no local conditional" do
-            get "/", {statutes: [{statute: "22.22.222.A", retrieve: ["compliance"]},
-                                 {statute: "22.22.222.C", 
-                                  retrieve: ["compliance"],
-                                  observed_data: {sources: ["left_hand"],
-                                                  value: 4,
-                                                  units: "fingers"}}]}
-            expected = {statutes: [{statute: "22.22.222.A", compliance: true},
-                                   {statute: "22.22.222.C", compliance: true}]}.to_json
+          describe "with no local conditional" do
+            it "should determine compliance is true when valid data is supplied within the requirements" do
+              get "/", {statutes: [{statute: "22.22.222.A", retrieve: ["compliance"]},
+                                   {statute: "22.22.222.C", 
+                                    retrieve: ["compliance"],
+                                    observed_data: {sources: ["left_hand"],
+                                                    value: 4,
+                                                    units: "fingers"}}]}
+              expected = {statutes: [{statute: "22.22.222.A", compliance: true},
+                                     {statute: "22.22.222.C", compliance: true}]}.to_json
+                                     
+              expect(last_response.status).to eq 200
+              expect(last_response.body).to eq expected
+            end
+            it "should determine compliance is false when valid data is supplied outside the requirements" do
+              get "/", {statutes: [{statute: "22.22.222.A", retrieve: ["compliance"]},
+                                  {statute: "22.22.222.C",
+                                   retrieve: ["compliance"],
+                                   observed_data: {sources: ["left_hand"],
+                                                   value: 8,
+                                                   units: "fingers"}}]}
+              expected = {statutes: [{statute: "22.22.222.A", compliance: false},
+                                     {statute: "22.22.222.C", compliance: false}]}.to_json
 
-            expect(last_response.status).to eq 200
-            expect(last_response.body).to eq expected
+              expect(last_response.status).to eq 200
+              expect(last_response.body).to eq expected
+            end
+          end
+          describe "with a local conditional" do
+            it "should determine compliance is true when valid data is supplied within the requirements" do
+              get "/", {statutes: [{statute: "22.22.222.B",
+                                    retrieve: ["compliance"],
+                                    observed_data: {sources: ["right_hand"],
+                                                    value: 4,
+                                                    units: "fingers"}},
+                                   {statute: "22.22.222.C",
+                                    retrieve: ["compliance"],
+                                    observed_data: {sources: ["left_hand"],
+                                                    value: 4,
+                                                    units: "fingers"}}]}
+              expected = {statutes: [{statute: "22.22.222.B", compliance: true},
+                                     {statute: "22.22.222.C", compliance: true}]}.to_json
+
+              expect(last_response.status).to eq 200
+              expect(last_response.body).to eq expected
+            end
           end
         end
       end
