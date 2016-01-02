@@ -39,5 +39,14 @@
        "value": [{"maximum": 5}],
        "units": "fingers"}
     ]
+  },
+  "33.33.333.A": {
+    "text": "Example where the sources include all.",
+    "requirements": [
+      {"conditional": "include",
+       "sources": ["all"],
+       "value": [{"minimum": 2}],
+       "units": "feet"}
+    ]
   }
 }

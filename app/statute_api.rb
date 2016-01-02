@@ -136,12 +136,17 @@ class StatuteApi < Sinatra::Base
     requirement = extract_relavent_data(requirement)
     data = extract_relavent_data(data)
 
-    unless (requirement["sources"] & data["sources"]) == data["sources"]
+    unless ((requirement["sources"] & data["sources"]) == data["sources"]) || (requirement["sources"] == ["all"])
       return false, nil
     end
     unless requirement["units"] == data["units"]
       return false, nil
     end
+    #if requirements["when"]
+    #  if requirements["when"] == ["daily"]
+    #    requirements["when"] == ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+    #  end
+    #  unless 
 
     outcome = []
     requirement["value"].each do |restraint_hash|
