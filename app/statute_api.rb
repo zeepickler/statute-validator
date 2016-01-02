@@ -70,39 +70,34 @@ class StatuteApi < Sinatra::Base
           payload_array << payload
           next
         end
-        conditionals = statute_requirements.select{|r| r.keys.include?("conditional") }
-        if conditionals.empty?
-          observed_data = nil
-        else
-          observed_data = data["observed_data"]
-          if observed_data.nil? || observed_data.empty?
-            payload["errors"] << "The observed_data was missing and is required to determine #{@routes[2]}."
-            payload_array << payload
-            next
-          end
+
+        observed_data = data["observed_data"]
+        if observed_data.nil? && statute_requirements.select{|r| r.keys.include?("refer_to_section")}.empty?
+          payload["errors"] << "The observed_data was missing and is required to determine #{@routes[2]}."
+          payload_array << payload
+          next
         end
+
         outcome, required_actions, refer_to_section_found = determine_compliance(statute_requirements, observed_data)
         refer_to_section_array += refer_to_section_found unless refer_to_section_found.empty?
         payload[@routes[2]] = outcome
-        unless required_actions.empty?
-          payload["required_actions"] = required_actions
-        end
+        payload["required_actions"] = required_actions unless required_actions.empty?
       end
       payload.delete("errors") if payload["errors"].empty?
       payload_array << payload
     end
     unless refer_to_section_array.empty?
-      refer_to_section_array.each do |refer|
-        dependant_results = []
-        refer["requires"].each do |dependant|
-          dependant_results << payload_array.select{|payload| payload["statute"] == dependant["statute"]}[0]["compliance"]
+      dependant_results = []
+      refer_to_section_array.each do |refer_to_section|
+        dependant_results += refer_to_section["requires"].collect do |dependant|
+          payload_array.select{|payload| payload["statute"] == dependant["statute"]}[0]["compliance"]
         end
         result = dependant_results.all?{|d| d == true }
 
-        section_with_dependency = payload_array.select{|payload| payload["statute"] == refer["statute"]}
-        unless section_with_dependency["compliance"] == false
+        section_with_dependency = payload_array.select{|payload| payload["statute"] == refer_to_section["statute"]}
+        unless section_with_dependency[0]["compliance"] == false
           payload_array.map! do |payload|
-            if payload["statute"] == refer["statute"]
+            if payload["statute"] == refer_to_section["statute"]
               payload["refer_to_section_compliance"] = result
             end
             payload
@@ -179,7 +174,7 @@ class StatuteApi < Sinatra::Base
   def determine_compliance(requirements, data)
     outcome = []
     required_actions = []
-    refer_to_section_arr = []
+    refer_to_section = []
     requirements.each do |requirement|
       if requirement["conditional"]
         result, required_action = is_within_constraints?(requirement["conditional"], requirement, data)
@@ -187,13 +182,13 @@ class StatuteApi < Sinatra::Base
         required_actions << required_action if required_action
       end
       if requirement["refer_to_section"]
-        refer_to_section_arr += requirement["refer_to_section"]
+        refer_to_section += requirement["refer_to_section"]
       end
     end
-    if outcome.empty? && !refer_to_section_arr.empty?
+    if outcome.empty? && !refer_to_section.empty?
       outcome = [true]
     end
     overall_outcome = outcome.all?{|x| x == true }
-    return overall_outcome, required_actions, refer_to_section_arr
+    return overall_outcome, required_actions, refer_to_section
   end
 end
