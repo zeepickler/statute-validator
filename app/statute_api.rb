@@ -93,7 +93,7 @@ class StatuteApi < Sinatra::Base
     else
       status 200
     end
-    data.to_json
+    {statutes: data}.to_json
   end
 
   def extract_relavent_data(data)
