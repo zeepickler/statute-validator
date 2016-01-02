@@ -32,16 +32,16 @@
        "value": {"minimum": "00:00", "maximum": "24:00"},
        "units": "time",
        "when": ["legal holidays"],
-       "refer_to_section": [{"section":"self","requires":[{"section":"18.10.010"}]}]}
+       "refer_to_section": [{"statute":"18.10.060.B","requires":[{"statute":"18.10.010"}]}]}
     ]
   },
   "18.10.060.C": {
     "text": "The adjustments to permissible sound levels established in Section 18.10.010 B apply to Subsections A and B above.",
     "requirements": [
-      {"refer_to_section": [{"section":"18.10.060.A",
-                             "requires": [{"section": "18.10.010.B"}]},
-                            {"section":"18.10.060.B",
-                             "requires": [{"section": "18.10.010.B"}]}
+      {"refer_to_section": [{"statute":"18.10.060.A",
+                             "requires": [{"statute": "18.10.010.B"}]},
+                            {"statute":"18.10.060.B",
+                             "requires": [{"statute": "18.10.010.B"}]}
                             ]
       }
     ]
@@ -55,8 +55,8 @@
   "18.10.060.F.1": {
     "text": "Notwithstanding Subsection B above, the permissible sound levels of Section 18.10.010 shall apply to pile drivers from 6 p.m. to 8 a.m. the following morning, and 6 p.m. Friday to 8 a.m. the following Monday, and on legal holidays.",
     "requirements":[
-      {"refer_to_section": [{"section":"self",
-                             "requires":[{"section": "18.10.010.B"}]}
+      {"refer_to_section": [{"statute":"18.10.060.F.1",
+                             "requires":[{"statute": "18.10.010.B"}]}
                             ]
       },
       {"conditional": "exclude",
