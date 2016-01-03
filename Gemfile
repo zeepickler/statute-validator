@@ -4,6 +4,7 @@ gem "rack"
 gem "sinatra"
 gem "activesupport"
 gem "byebug"
+gem "chronic"
 
 group :test do
   gem "rspec"
