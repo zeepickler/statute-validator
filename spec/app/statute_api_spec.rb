@@ -205,7 +205,7 @@ RSpec.describe StatuteApi do
             end
           end
         end
-        it "handles true for a valid statute supplied with valid, statute, retrieve compliance parameter, and observed_data given any source when the requirements use source all" do
+        it "returns true for a valid statute supplied with valid statute, retrieve compliance parameter, and observed_data given any source when the requirements use source all" do
           get "/", {statutes: [{statute: "33.33.333.A",
                                 retrieve: ["compliance"],
                                 observed_data: {sources: ["alien"],

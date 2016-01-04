@@ -65,6 +65,7 @@ class StatuteApi < Sinatra::Base
         end
       end
       if retrieve.include?(@routes[2])
+
         statute_requirements = @statutes[data["statute"]][@routes[1]]
         if statute_requirements.nil?
           payload["errors"] << "The #{@routes[1]} for this statute to determine #{@routes[2]} were missing."
@@ -134,6 +135,7 @@ class StatuteApi < Sinatra::Base
   end
 
   def is_within_constraints?(conditional, requirement, data)
+    
     requirement = extract_relavent_data(requirement)
     data = extract_relavent_data(data)
 
@@ -156,24 +158,26 @@ class StatuteApi < Sinatra::Base
     # - Saturday
     #
     # when used in combination all must be true ie. ["Sunday", "legal_holiday"], day must be on Sunday and a legal holiday
-    if requirements["when"] && data["when"] && valid_date?(data["when"])
-      if requirements["when"].include?("daily")
-        # do nothing
-      end
-      if requirements["when"].include?("legal_holidays")
-        legal_holidays = get_legal_holidays(get_date_year(data["when"]))
-        unless legal_holidays.include?(data["when"])
-          return false, nil
+    if requirement["when"]
+      if data["when"] && valid_date?(data["when"])
+        if requirement["when"].include?("daily")
+          # do nothing
         end
-      end
-      if !(requirements["when"] & ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]).empty?
-        day = Date.parse(data["when"]).strftime("%A")
-        unless requirements["when"].any?{|d| d == day }
-          return false, nil
+        if requirement["when"].include?("legal_holidays")
+          legal_holidays = get_legal_holidays(get_date_year(data["when"]))
+          unless legal_holidays.include?(data["when"])
+            return false, nil
+          end
         end
+        if !(requirement["when"] & ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]).empty?
+          day = Date.parse(data["when"]).strftime("%A")
+          unless requirement["when"].any?{|d| d == day }
+            return false, nil
+          end
+        end
+      else
+        return false, nil
       end
-    else
-      return false, nil
     end
 
     outcome = []
@@ -213,6 +217,7 @@ class StatuteApi < Sinatra::Base
 
     requirements.each do |requirement|
       if requirement["conditional"]
+
         result, required_action = is_within_constraints?(requirement["conditional"], requirement, data)
         outcome << result
         required_actions << required_action if required_action
