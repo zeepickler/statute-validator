@@ -169,9 +169,11 @@ class StatuteApi < Sinatra::Base
             return false, nil
           end
         end
-        if !(requirement["when"] & ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]).empty?
+        weekdays = requirement["when"] & ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
+        unless weekdays.empty?
           day = Date.parse(data["when"]).strftime("%A")
-          unless requirement["when"].any?{|d| d == day }
+
+          unless weekdays.any?{|d| d == day }
             return false, nil
           end
         end

@@ -93,7 +93,7 @@ RSpec.describe StatuteApi do
           expect(last_response.status).to eq 400
           expect(last_response.body).to eq expected
         end
-        it "returns an error message JOSN if the compliance and observed_data parameter is specified but the JSON data does not have a requirements attribute" do
+        it "returns an error message JSON if the compliance and observed_data parameter is specified but the JSON data does not have a requirements attribute" do
           get "/", {statutes: [{statute: "99.99.999.A", retrieve: ["compliance"], observed_data: {foo: "bar"}}]}
           expected = {statutes: [{errors: ["The requirements for this statute to determine compliance were missing."], statute: "99.99.999.A"}]}.to_json
         
