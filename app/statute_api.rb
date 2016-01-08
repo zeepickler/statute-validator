@@ -121,6 +121,10 @@ class StatuteApi < Sinatra::Base
     return return_data(payload_array)
   end
 
+  get '/demo' do
+
+  end
+
   def return_data(data)
     if data.any?{|d| !d["errors"].nil? && !d["errors"].empty? }
       status 400

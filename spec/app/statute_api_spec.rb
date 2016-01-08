@@ -205,16 +205,52 @@ RSpec.describe StatuteApi do
             end
           end
         end
-        it "returns true for a valid statute supplied with valid statute, retrieve compliance parameter, and observed_data given any source when the requirements use source all" do
-          get "/", {statutes: [{statute: "33.33.333.A",
-                                retrieve: ["compliance"],
-                                observed_data: {sources: ["alien"],
-                                                value: 3,
-                                                units: "feet"}}]}
-          expected = {statutes: [{statute: "33.33.333.A", compliance: true}]}.to_json
+        describe "source all" do
+          it "returns true for a valid statute supplied with valid statute, retrieve compliance parameter, and observed_data given any source" do
+            get "/", {statutes: [{statute: "33.33.333.A",
+                                  retrieve: ["compliance"],
+                                  observed_data: {sources: ["alien"],
+                                                  value: 3,
+                                                  units: "feet"}}]}
+            expected = {statutes: [{statute: "33.33.333.A", compliance: true}]}.to_json
 
-          expect(last_response.status).to eq 200
-          expect(last_response.body).to eq expected
+            expect(last_response.status).to eq 200
+            expect(last_response.body).to eq expected
+          end
+        end
+        describe "when for time units" do
+          describe "given a valid statute supplied with valid statute, retrieve compliance parameter, and observed_data" do
+            it "returns false if the observed_data is an invalid formatted date" do
+            end
+            describe "given a when requirement with daily" do
+              it "returns true for any day" do
+              end
+            end
+            describe "given a when requirement with only a single day" do
+              it "return true when observed_data when date is within the requirements" do
+              end
+              it "returns false when observed_data when date is outside the requirements" do
+              end
+            end
+            describe "given a when requirement with multiple days" do 
+              it "returns true when observed_data when date is within the requirements" do
+              end
+              it "returns false when observed_data when date is within the requirements" do
+              end
+            end
+            describe "given a when requirement with legal_holidays only" do
+              it "returns true when observed_data when date is within the requirements" do
+              end
+              it "returns false when observed_data when date is within the requirements" do
+              end
+            end
+            describe "given a when requirement with legal_holidays and a single day" do
+              it "returns true when observed_data when date is within the requirements" do
+              end
+              it "returns false when observed_data when date is within the requirements" do
+              end
+            end
+          end
         end
       end
     end

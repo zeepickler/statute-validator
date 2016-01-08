@@ -48,5 +48,15 @@
        "value": [{"minimum": 2}],
        "units": "feet"}
     ]
+  },
+  "44.44.444.A": {
+    "text": "Example where when is daily.",
+    "requirements": [
+      {"conditional": "include",
+       "sources": ["vampires"],
+       "value":[{"minimum": "2:00"}],
+       "units": "time",
+       "when": ["daily"]}
+    ]
   }
 }
