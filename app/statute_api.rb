@@ -163,7 +163,7 @@ class StatuteApi < Sinatra::Base
     #
     # when used in combination all must be true ie. ["Sunday", "legal_holiday"], day must be on Sunday and a legal holiday
     if requirement["when"]
-      if data["when"] && valid_date?(data["when"])
+      if data["when"] && date_valid?(data["when"])
         if requirement["when"].include?("daily")
           # do nothing
         end
@@ -243,13 +243,8 @@ class StatuteApi < Sinatra::Base
 
   # US Legal Holidays
 
-  def date_valid?(str, format='%Y-%m-%d')
-    begin
-      Date.strptime(str,format)
-      return true
-    rescue
-      return false
-    end
+  def date_valid?(date)
+    /^\d{4,}[\/|-]\d{2}[\/|-]\d{2}$/ =~ date
   end
 
   def get_date_year(str, format='%Y-%m-%d')

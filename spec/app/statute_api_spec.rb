@@ -221,33 +221,75 @@ RSpec.describe StatuteApi do
         describe "when for time units" do
           describe "given a valid statute supplied with valid statute, retrieve compliance parameter, and observed_data" do
             it "returns false if the observed_data is an invalid formatted date" do
+              expected = {statutes: [{statute: "44.44.444.A", compliance: false}]}.to_json
+              invalid_date_formats = ["2000-13-01",
+                                      "2000-12-32",
+                                      "2000-100-01",
+                                      "2000-01-100",
+                                      "AB-01-01",
+                                      "2000-AB-01",
+                                      "2000-01-AB",
+                                      "200012-01",
+                                      "2000-1201",
+                                      "2001-01-01A",
+                                      "A2001-01-01",
+                                      "@#%#@!...."]
+              invalid_date_formats.each do |invalid_date_format|
+                get "/", {statutes: [{statute: "44.44.444.A",
+                                      retrieve: ["compliance"],
+                                      observed_data: {sources: ["vampires"],
+                                                      value: "3:00",
+                                                      units: "time",
+                                                      when: invalid_date_format }}]}
+
+                expect(last_response.status).to eq 200
+                expect(last_response.body).to eq expected
+              end     
+            end
+            it "returns true if the observed_data is a valid formatted date" do
+              expected = {statutes: [{statute: "44.44.444.A", compliance: true}]}.to_json
+              valid_date_formats = ["2000-01-01",
+                                    "20000-01-01",
+                                    "2000/01/01",
+                                    "20000/01/01"]
+              valid_date_formats.each do |valid_date_format|
+                get "/", {statutes: [{statute: "44.44.444.A",
+                                      retrieve: ["compliance"],
+                                      observed_data: {sources: ["vampires"],
+                                                      value: "3:00",
+                                                      units: "time",
+                                                      when: valid_date_format }}]}
+
+                expect(last_response.status).to eq 200
+                expect(last_response.body).to eq expected
+              end
             end
             describe "given a when requirement with daily" do
-              it "returns true for any day" do
+              xit "returns true for any day" do
               end
             end
             describe "given a when requirement with only a single day" do
-              it "return true when observed_data when date is within the requirements" do
+              xit "return true when observed_data when date is within the requirements" do
               end
-              it "returns false when observed_data when date is outside the requirements" do
+              xit "returns false when observed_data when date is outside the requirements" do
               end
             end
             describe "given a when requirement with multiple days" do 
-              it "returns true when observed_data when date is within the requirements" do
+              xit "returns true when observed_data when date is within the requirements" do
               end
-              it "returns false when observed_data when date is within the requirements" do
+              xit "returns false when observed_data when date is within the requirements" do
               end
             end
             describe "given a when requirement with legal_holidays only" do
-              it "returns true when observed_data when date is within the requirements" do
+              xit "returns true when observed_data when date is within the requirements" do
               end
-              it "returns false when observed_data when date is within the requirements" do
+              xit "returns false when observed_data when date is within the requirements" do
               end
             end
             describe "given a when requirement with legal_holidays and a single day" do
-              it "returns true when observed_data when date is within the requirements" do
+              xit "returns true when observed_data when date is within the requirements" do
               end
-              it "returns false when observed_data when date is within the requirements" do
+              xit "returns false when observed_data when date is within the requirements" do
               end
             end
           end
