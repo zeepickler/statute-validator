@@ -241,7 +241,6 @@ RSpec.describe StatuteApi do
                                                       value: "3:00",
                                                       units: "time",
                                                       when: invalid_date_format }}]}
-
                 expect(last_response.status).to eq 200
                 expect(last_response.body).to eq expected
               end     
@@ -265,31 +264,152 @@ RSpec.describe StatuteApi do
               end
             end
             describe "given a when requirement with daily" do
-              xit "returns true for any day" do
+              it "returns true for any day" do
+                get "/", {statutes: [{statute: "44.44.444.A",
+                                      retrieve: ["compliance"],
+                                      observed_data: {sources: ["vampires"],
+                                                      value: "3:00",
+                                                      units: "time",
+                                                      when: "2022-01-01" }}]}
+                expected = {statutes: [{statute: "44.44.444.A", compliance: true}]}.to_json
+
+                expect(last_response.status).to eq 200
+                expect(last_response.body).to eq expected
               end
             end
             describe "given a when requirement with only a single day" do
-              xit "return true when observed_data when date is within the requirements" do
+              it "return true when observed_data when date is within the requirements" do
+                get "/", {statutes: [{statute: "44.44.444.B",
+                                      retrieve: ["compliance"],
+                                      observed_data: {sources: ["vampires"],
+                                                      value: "3:00",
+                                                      units: "time",
+                                                      when: "2016-01-10" }}]}
+                expected = {statutes: [{statute: "44.44.444.B", compliance: true}]}.to_json
+
+                expect(last_response.status).to eq 200
+                expect(last_response.body).to eq expected
               end
-              xit "returns false when observed_data when date is outside the requirements" do
+              it "returns false when observed_data when date is outside the requirements" do
+                get "/", {statutes: [{statute: "44.44.444.B",
+                                      retrieve: ["compliance"],
+                                      observed_data: {sources: ["vampires"],
+                                                      value: "3:00",
+                                                      units: "time",
+                                                      when: "2016-01-11" }}]}
+                expected = {statutes: [{statute: "44.44.444.B", compliance: false}]}.to_json
+
+                expect(last_response.status).to eq 200
+                expect(last_response.body).to eq expected
               end
             end
             describe "given a when requirement with multiple days" do 
-              xit "returns true when observed_data when date is within the requirements" do
+              it "returns true when observed_data when date is within the requirements" do
+                valid_dates = ["2016-01-06",
+                               "2016-01-07"]
+                expected = {statutes: [{statute: "44.44.444.C", compliance: true}]}.to_json
+                valid_dates.each do |valid_date|
+                  get "/", {statutes: [{statute: "44.44.444.C",
+                                        retrieve: ["compliance"],
+                                        observed_data: {sources: ["vampires"],
+                                                        value: "3:00",
+                                                        units: "time",
+                                                        when: valid_date }}]}
+                  expect(last_response.status).to eq 200
+                  expect(last_response.body).to eq expected
+                end
               end
-              xit "returns false when observed_data when date is within the requirements" do
+              it "returns false when observed_data when date is outside the requirements" do
+                invalid_dates = ["2016-01-05",
+                                 "2016-01-08"]
+                expected = {statutes: [{statute: "44.44.444.C", compliance: false}]}.to_json
+                invalid_dates.each do |invalid_date|
+                  get "/", {statutes: [{statute: "44.44.444.C",
+                                        retrieve: ["compliance"],
+                                        observed_data: {sources: ["vampires"],
+                                                        value: "3:00",
+                                                        units: "time",
+                                                        when: invalid_date}}]}
+                  expect(last_response.status).to eq 200
+                  expect(last_response.body).to eq expected
+                end
               end
             end
             describe "given a when requirement with legal_holidays only" do
-              xit "returns true when observed_data when date is within the requirements" do
+              it "returns true when observed_data when date is within the requirements" do
+                legal_holidays_2016 = ["2016-01-01",
+                                       "2016-01-18",
+                                       "2016-02-15",
+                                       "2016-05-30",
+                                       "2016-07-04",
+                                       "2016-09-05",
+                                       "2016-11-11",
+                                       "2016-11-24",
+                                       "2016-12-25"]
+                expected = {statutes: [{statute: "44.44.444.D", compliance: true}]}.to_json
+                legal_holidays_2016.each do |legal_holiday|
+                  get "/", {statutes: [{statute: "44.44.444.D",
+                                        retrieve: ["compliance"],
+                                        observed_data: {sources: ["vampires"],
+                                                        value: "3:00",
+                                                        units: "time",
+                                                        when: legal_holiday}}]}
+                  expect(last_response.status).to eq 200
+                  expect(last_response.body).to eq expected
+                end
               end
-              xit "returns false when observed_data when date is within the requirements" do
+              it "returns false when observed_data when date is outside the requirements" do
+                not_legal_holidays_2016 = ["2016-01-02",
+                                           "2016-09-04",
+                                           "2016-12-24"]
+                expected = {statutes: [{statute: "44.44.444.D", compliance: false}]}.to_json
+                not_legal_holidays_2016.each do |not_legal_holiday|
+                  get "/", {statutes: [{statute: "44.44.444.D",
+                                        retrieve: ["compliance"],
+                                        observed_data: {sources: ["vampires"],
+                                                        value: "3:00",
+                                                        units: "time",
+                                                        when: not_legal_holiday}}]}
+                  expect(last_response.status).to eq 200
+                  expect(last_response.body).to eq expected
+                end
               end
             end
             describe "given a when requirement with legal_holidays and a single day" do
-              xit "returns true when observed_data when date is within the requirements" do
+              it "returns true when observed_data when date is within the requirements" do
+                valid_days = ["2016-01-01",
+                              "2016-11-11",
+                              "2016-11-24"]
+                expected = {statutes: [{statute: "44.44.444.E", compliance: true}]}.to_json
+                valid_days.each do |valid_day|
+                  get "/", {statutes: [{statute: "44.44.444.E",
+                                        retrieve: ["compliance"],
+                                        observed_data: {sources: ["vampires"],
+                                                        value: "3:00",
+                                                        units: "time",
+                                                        when: valid_day}}]}
+                  expect(last_response.status).to eq 200
+                  expect(last_response.body).to eq expected
+                end
               end
-              xit "returns false when observed_data when date is within the requirements" do
+              it "returns false when observed_data when date is outside the requirements" do
+                invalid_days = ["2016-01-18",
+                                "2016-02-15",
+                                "2016-05-30",
+                                "2016-07-04",
+                                "2016-09-05",
+                                "2016-12-25"]
+                expected = {statutes: [{statute: "44.44.444.E", compliance: false}]}.to_json
+                invalid_days.each do |invalid_day|
+                  get "/", {statutes: [{statute: "44.44.444.E",
+                                        retrieve: ["compliance"],
+                                        observed_data: {sources: ["vampires"],
+                                                        value: "3:00",
+                                                        units: "time",
+                                                        when: invalid_day}}]}
+                  expect(last_response.status).to eq 200
+                  expect(last_response.body).to eq expected
+                end                
               end
             end
           end

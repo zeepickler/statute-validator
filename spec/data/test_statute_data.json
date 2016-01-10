@@ -58,5 +58,45 @@
        "units": "time",
        "when": ["daily"]}
     ]
+  },
+  "44.44.444.B": {
+    "text": "Example where when is a single day.",
+    "requirements": [
+      {"conditional": "include",
+       "sources": ["vampires"],
+       "value":[{"minimum": "2:00"}],
+       "units": "time",
+       "when": ["Sunday"]}
+    ]
+  },
+  "44.44.444.C": {
+    "text": "Example where when has multiple days.",
+    "requirements": [
+      {"conditional": "include",
+       "sources": ["vampires"],
+       "value":[{"minimum": "2:00"}],
+       "units": "time",
+       "when": ["Wednesday","Thursday"]}
+    ]
+  },
+  "44.44.444.D": {
+    "text": "Example where when has legal_holidays.",
+    "requirements": [
+      {"conditional": "include",
+       "sources": ["vampires"],
+       "value":[{"minimum": "2:00"}],
+       "units": "time",
+       "when": ["legal_holidays"]}
+    ]
+  },
+  "44.44.444.E": {
+    "text": "Example where when has legal_holidays and multiple days.",
+    "requirements": [
+      {"conditional": "include",
+       "sources": ["vampires"],
+       "value":[{"minimum": "2:00"}],
+       "units": "time",
+       "when": ["Friday", "Thursday", "legal_holidays"]}
+    ]
   }
 }

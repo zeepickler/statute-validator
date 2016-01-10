@@ -1,6 +1,7 @@
 require 'sinatra'
 require 'json'
 require 'chronic'
+require 'date'
 
 class StatuteApi < Sinatra::Base
   before do
@@ -163,26 +164,31 @@ class StatuteApi < Sinatra::Base
     #
     # when used in combination all must be true ie. ["Sunday", "legal_holiday"], day must be on Sunday and a legal holiday
     if requirement["when"]
-      if data["when"] && date_valid?(data["when"])
-        if requirement["when"].include?("daily")
-          # do nothing
-        end
-        if requirement["when"].include?("legal_holidays")
-          legal_holidays = get_legal_holidays(get_date_year(data["when"]))
-          unless legal_holidays.include?(data["when"])
-            return false, nil
-          end
-        end
-        weekdays = requirement["when"] & ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
-        unless weekdays.empty?
-          day = Date.parse(data["when"]).strftime("%A")
-
-          unless weekdays.any?{|d| d == day }
-            return false, nil
-          end
-        end
+      formattable_date, date = format_date(data["when"])
+      if formattable_date
+        data["when"] = date
       else
         return false, nil
+      end
+      unless data["when"] && date_valid?(data["when"])
+        return false, nil
+      end
+      if requirement["when"].include?("daily")
+        # do nothing
+      end
+      if requirement["when"].include?("legal_holidays")
+        legal_holidays = get_legal_holidays(get_date_year(data["when"]))
+        unless legal_holidays.include?(data["when"])
+          return false, nil
+        end
+      end
+      weekdays = requirement["when"] & ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
+      unless weekdays.empty?
+        day = Date.parse(data["when"]).strftime("%A")
+
+        unless weekdays.any?{|d| d == day }
+          return false, nil
+        end
       end
     end
 
@@ -242,13 +248,30 @@ class StatuteApi < Sinatra::Base
   end
 
   # US Legal Holidays
-
-  def date_valid?(date)
-    /^\d{4,}[\/|-]\d{2}[\/|-]\d{2}$/ =~ date
+  def format_date(str)
+    unless /^\d{4,}[\/|-]\d{2}[\/|-]\d{2}$/ =~ str
+      return false, str
+    end
+    if str.include?("/")
+      if str.count("/") == 2
+        str.gsub!("/","-")
+      else
+        return false, str
+      end
+    end
+    return true, str
+  end
+  def date_valid?(str, format='%Y-%m-%d')
+    begin
+      Date.strptime(str,format)
+      return true
+    rescue
+      return false
+    end
   end
 
   def get_date_year(str, format='%Y-%m-%d')
-    Date.strptime.(str,format).year
+    Date.strptime(str,format).year
   end
 
   # For fixed holidays: If occurs on a Sat., it is observed on day before (Fri.). If occurs on Sun., it is observed on day after (Mon.).
@@ -267,24 +290,22 @@ class StatuteApi < Sinatra::Base
     legal_holidays << check_fixed_date(Date.new(year,1,1))
     # MLK Jr. Day = 3rd Monday in Jan.
     legal_holidays << Chronic.parse('3rd monday in january', now: Time.local(year,1,1)).strftime('%Y-%m-%d')
-    # George Washington's Birthday = 3rd Monday in Feb.
-    legal_holidays << Chronic.parse('3rd monday in februrary', now: Time.local(year,1,1)).strftime('%Y-%m-%d')
+    # George Washington's Birthday
+    legal_holidays << Chronic.parse('3rd monday in february', now: Time.local(year,1,1)).strftime('%Y-%m-%d')
     # Memorial Day = Last Monday in May
-    date = Date.new(year,5,-1)
-    date -= (date.wday -1) % 7
-    legal_holidays << date
+    memorial_day = Date.new(year,5,-1)
+    memorial_day -= (memorial_day.wday - 1) % 7
+    legal_holidays << memorial_day.strftime('%Y-%m-%d')
     # Independence Day = July 4th
-    legal_holidays << check_fixed_date(Date.new(year,7,4))
+    legal_holidays << Date.new(year,7,4).strftime('%Y-%m-%d')
     # Labor Day = 1st Mon. in Sept.
     legal_holidays << Chronic.parse('1st monday in september', now: Time.local(year,1,1)).strftime('%Y-%m-%d')
-    # Columbus Day = 2nd Mon. in Oct.
-    legal_holidays << Chronic.parse('2nd monday in october', now: Time.local(year,1,1)).strftime('%Y-%m-%d')
     # Veteran's Day = Nov. 11th
-    legal_holidays << check_fixed_date(Date.new(year,11,11))
+    legal_holidays << Date.new(year,11,11).strftime('%Y-%m-%d')
     # Thanksgiving Day = 4th Thurs. in Nov.
     legal_holidays << Chronic.parse('4th thursday in november', now: Time.local(year,1,1)).strftime('%Y-%m-%d')
     # Christmas Day = Dec. 25th
-    legal_holidays << check_fixed_date(Date.new(year,12,25))
+    legal_holidays << Date.new(year,12,25).strftime('%Y-%m-%d')
     return legal_holidays
   end
 end
