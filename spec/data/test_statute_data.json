@@ -96,7 +96,7 @@
        "sources": ["vampires"],
        "value":[{"minimum": "2:00"}],
        "units": "time",
-       "when": ["Friday", "Thursday", "legal_holidays"]}
+       "when": ["Thursday", "Friday", "legal_holidays"]}
     ]
   }
 }

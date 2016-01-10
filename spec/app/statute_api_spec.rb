@@ -375,11 +375,19 @@ RSpec.describe StatuteApi do
                 end
               end
             end
-            describe "given a when requirement with legal_holidays and a single day" do
+            describe "given a when requirement of legal_holidays or Thursday or Friday" do
               it "returns true when observed_data when date is within the requirements" do
                 valid_days = ["2016-01-01",
+                              "2016-01-18",
+                              "2016-02-15",
+                              "2016-05-30",
+                              "2016-07-04",
+                              "2016-09-05",
                               "2016-11-11",
-                              "2016-11-24"]
+                              "2016-11-24",
+                              "2016-12-25",
+                              "2016-12-29",
+                              "2016-12-30"]
                 expected = {statutes: [{statute: "44.44.444.E", compliance: true}]}.to_json
                 valid_days.each do |valid_day|
                   get "/", {statutes: [{statute: "44.44.444.E",
@@ -393,12 +401,8 @@ RSpec.describe StatuteApi do
                 end
               end
               it "returns false when observed_data when date is outside the requirements" do
-                invalid_days = ["2016-01-18",
-                                "2016-02-15",
-                                "2016-05-30",
-                                "2016-07-04",
-                                "2016-09-05",
-                                "2016-12-25"]
+                invalid_days = ["2016-12-05",
+                                "2016-12-06"]
                 expected = {statutes: [{statute: "44.44.444.E", compliance: false}]}.to_json
                 invalid_days.each do |invalid_day|
                   get "/", {statutes: [{statute: "44.44.444.E",

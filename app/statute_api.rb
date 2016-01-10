@@ -176,17 +176,35 @@ class StatuteApi < Sinatra::Base
       if requirement["when"].include?("daily")
         # do nothing
       end
+      legal_holidays_present = false
+      weekdays_present = false
+      legal_holidays_found = false
+      weekdays_found = false
       if requirement["when"].include?("legal_holidays")
+        legal_holidays_present = true
         legal_holidays = get_legal_holidays(get_date_year(data["when"]))
-        unless legal_holidays.include?(data["when"])
-          return false, nil
+        if legal_holidays.include?(data["when"])
+          legal_holidays_found = true
         end
       end
       weekdays = requirement["when"] & ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
       unless weekdays.empty?
+        weekdays_present = true
         day = Date.parse(data["when"]).strftime("%A")
-
-        unless weekdays.any?{|d| d == day }
+        if weekdays.any?{|d| d == day }
+          weekdays_found = true
+        end
+      end
+      if weekdays_present && legal_holidays_present
+        if !(weekdays_found || legal_holidays_found)
+          return false, nil
+        end
+      elsif weekdays_present
+        if !weekdays_found
+          return false, nil
+        end
+      elsif legal_holidays_present
+        if !legal_holidays_found
           return false, nil
         end
       end
