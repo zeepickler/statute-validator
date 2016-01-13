@@ -220,30 +220,48 @@ RSpec.describe StatuteApi do
         end
         describe "when for time units" do
           describe "given a valid statute supplied with valid statute, retrieve compliance parameter, and observed_data" do
-            it "returns false if the observed_data is an invalid formatted date" do
-              expected = {statutes: [{statute: "44.44.444.A", compliance: false}]}.to_json
-              invalid_date_formats = ["2000-13-01",
-                                      "2000-12-32",
-                                      "2000-100-01",
-                                      "2000-01-100",
-                                      "AB-01-01",
-                                      "2000-AB-01",
-                                      "2000-01-AB",
-                                      "200012-01",
-                                      "2000-1201",
-                                      "2001-01-01A",
-                                      "A2001-01-01",
-                                      "@#%#@!...."]
-              invalid_date_formats.each do |invalid_date_format|
-                get "/", {statutes: [{statute: "44.44.444.A",
-                                      retrieve: ["compliance"],
-                                      observed_data: {sources: ["vampires"],
-                                                      value: "3:00",
-                                                      units: "time",
-                                                      when: invalid_date_format }}]}
-                expect(last_response.status).to eq 200
-                expect(last_response.body).to eq expected
-              end     
+            describe "for invalid when observed_data" do
+              it "returns an error for invalid formatted date" do
+                expected = {statutes: [{errors: ["when date could not be formatted (expects 'YYYY-MM-DD')"], statute: "44.44.444.A"}]}.to_json
+                invalid_date_formats = ["2000-100-01",
+                                        "2000-01-100",
+                                        "AB-01-01",
+                                        "2000-AB-01",
+                                        "2000-01-AB",
+                                        "200012-01",
+                                        "2000-1201",
+                                        "2001-01-01A",
+                                        "A2001-01-01",
+                                        "@#%#@!...."]
+                
+                invalid_date_formats.each do |invalid_date_format|
+                  get "/", {statutes: [{statute: "44.44.444.A",
+                                        retrieve: ["compliance"],
+                                        observed_data: {sources: ["vampires"],
+                                                        value: "3:00",
+                                                        units: "time",
+                                                        when: invalid_date_format }}]}
+
+                  expect(last_response.status).to eq 400
+                  expect(last_response.body).to eq expected
+                end
+              end
+              it "returns an error for an invalid calendar date" do
+                expected = {statutes: [{errors: ["when date was not valid date (check calendar date)"], statute: "44.44.444.A"}]}.to_json
+                invalid_calendar_dates = ["2000-13-01",
+                                          "2000-12-32"]
+                invalid_calendar_dates.each do |invalid_calendar_date|
+                  get "/", {statutes: [{statute: "44.44.444.A",
+                                        retrieve: ["compliance"],
+                                        observed_data: {sources: ["vampires"],
+                                                        value: "3:00",
+                                                        units: "time",
+                                                        when: invalid_calendar_date }}]}
+
+                  expect(last_response.status).to eq 400
+                  expect(last_response.body).to eq expected
+                end
+              end
             end
             it "returns true if the observed_data is a valid formatted date" do
               expected = {statutes: [{statute: "44.44.444.A", compliance: true}]}.to_json
@@ -297,9 +315,10 @@ RSpec.describe StatuteApi do
                                                       value: "3:00",
                                                       units: "time",
                                                       when: "2016-01-11" }}]}
-                expected = {statutes: [{statute: "44.44.444.B", compliance: false}]}.to_json
+                expected = {statutes: [{errors: ["weekdays required and not found"], statute: "44.44.444.B"}]}.to_json
 
-                expect(last_response.status).to eq 200
+
+                expect(last_response.status).to eq 400
                 expect(last_response.body).to eq expected
               end
             end
@@ -322,7 +341,7 @@ RSpec.describe StatuteApi do
               it "returns false when observed_data when date is outside the requirements" do
                 invalid_dates = ["2016-01-05",
                                  "2016-01-08"]
-                expected = {statutes: [{statute: "44.44.444.C", compliance: false}]}.to_json
+                expected = {statutes: [{errors: ["weekdays required and not found"], statute: "44.44.444.C"}]}.to_json
                 invalid_dates.each do |invalid_date|
                   get "/", {statutes: [{statute: "44.44.444.C",
                                         retrieve: ["compliance"],
@@ -330,7 +349,7 @@ RSpec.describe StatuteApi do
                                                         value: "3:00",
                                                         units: "time",
                                                         when: invalid_date}}]}
-                  expect(last_response.status).to eq 200
+                  expect(last_response.status).to eq 400
                   expect(last_response.body).to eq expected
                 end
               end

@@ -81,9 +81,15 @@ class StatuteApi < Sinatra::Base
           next
         end
 
-        outcome, required_actions, refer_to_section_found = determine_compliance(statute_requirements, observed_data)
+        outcome, required_actions, refer_to_section_found, reasons_for_noncompliance, errors = determine_compliance(statute_requirements, observed_data)
+        unless errors.empty?
+          payload["errors"] << errors.join(", ")
+          payload_array << payload
+          next
+        end
         refer_to_section_array += refer_to_section_found unless refer_to_section_found.empty?
         payload[@routes[2]] = outcome
+        payload["reasons_for_noncompliance"] = reasons_for_noncompliance
         payload["required_actions"] = required_actions unless required_actions.empty?
       end
       payload.delete("errors") if payload["errors"].empty?
@@ -139,19 +145,25 @@ class StatuteApi < Sinatra::Base
     data.select{|k,v| ["sources","value","units","location","when","conditional","refer_to_section","required_action"].include?(k) }
   end
 
+  def comparison_reason(requirement, data, item)
+    return "The required #{item} (#{requirement[item].join(", ")}) does not match the observed_data (#{data[item].join(", ")})."
+  end
+
   def is_within_constraints?(conditional, requirement, data)
-    
+    errors = []
+    reasons_for_noncompliance = []
     requirement = extract_relavent_data(requirement)
     data = extract_relavent_data(data)
 
     unless ((requirement["sources"] & data["sources"]) == data["sources"]) || (requirement["sources"] == ["all"])
-      return false, nil
+      reasons_for_noncompliance << comparison_reason(requirement, data, "sources")
     end
     unless requirement["units"] == data["units"]
-      return false, nil
+      reasons_for_noncompliance << comparison_reason(requirement, data, "units")
     end
+
     # when:
-    # requirements when possible values (and any combination of):
+    # requirements 'when' possible values (and any combination of):
     # - daily
     # - legal_holidays
     # - Sunday
@@ -168,10 +180,10 @@ class StatuteApi < Sinatra::Base
       if formattable_date
         data["when"] = date
       else
-        return false, nil
+        return false, nil, reasons_for_noncompliance, ["when date could not be formatted (expects 'YYYY-MM-DD')"]
       end
       unless data["when"] && date_valid?(data["when"])
-        return false, nil
+        return false, nil, reasons_for_noncompliance, ["when date was not valid date (check calendar date)"]
       end
       if requirement["when"].include?("daily")
         # do nothing
@@ -195,18 +207,20 @@ class StatuteApi < Sinatra::Base
           weekdays_found = true
         end
       end
+      date_errors = []
       if weekdays_present && legal_holidays_present
-        if !(weekdays_found || legal_holidays_found)
-          return false, nil
-        end
+        date_errors << "weekdays required and not found" unless weekdays_found 
+        date_errors << "legal holidays required and not found" unless legal_holidays_found
       elsif weekdays_present
-        if !weekdays_found
-          return false, nil
-        end
+        date_errors << "weekdays required and not found" unless weekdays_found 
       elsif legal_holidays_present
-        if !legal_holidays_found
-          return false, nil
-        end
+        date_errors << "legal holidays required and not found" unless legal_holidays_found
+      end
+      unless date_errors.empty?
+        reasons_for_noncompliance += date_errors
+      end
+      unless reasons_for_noncompliance.empty?
+        return false, nil, reasons_for_noncompliance, []
       end
     end
 
@@ -227,15 +241,15 @@ class StatuteApi < Sinatra::Base
     case conditional
     when "include"
       if overall_outcome
-        return true, requirement["required_action"]
+        return true, requirement["required_action"], [], []
       else
-        return false, nil
+        return false, nil, ["values were not within the included constraints"], []
       end
     when "exclude"
       if overall_outcome
-        return false, nil
+        return false, nil, ["values were within the excluded constraints"], []
       else
-        return true, requirement["required_action"]
+        return true, requirement["required_action"], [], []
       end
     end
   end
@@ -244,13 +258,17 @@ class StatuteApi < Sinatra::Base
     outcome = []
     required_actions = []
     refer_to_section = []
+    reasons_for_noncompliance = []
+    errors = []
 
     requirements.each do |requirement|
       if requirement["conditional"]
 
-        result, required_action = is_within_constraints?(requirement["conditional"], requirement, data)
+        result, required_action, found_reasons_for_noncompliance, found_errors = is_within_constraints?(requirement["conditional"], requirement, data)
         outcome << result
         required_actions << required_action if required_action
+        reasons_for_noncompliance += found_reasons_for_noncompliance unless found_reasons_for_noncompliance.empty?
+        errors += found_errors unless found_errors.empty?
       end
       if requirement["refer_to_section"]
         refer_to_section += requirement["refer_to_section"]
@@ -262,7 +280,7 @@ class StatuteApi < Sinatra::Base
     end
     overall_outcome = outcome.all?{|x| x == true }
     
-    return overall_outcome, required_actions, refer_to_section
+    return overall_outcome, required_actions, refer_to_section, reasons_for_noncompliance, errors
   end
 
   # US Legal Holidays
