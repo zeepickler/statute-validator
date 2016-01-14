@@ -89,7 +89,7 @@ class StatuteApi < Sinatra::Base
         end
         refer_to_section_array += refer_to_section_found unless refer_to_section_found.empty?
         payload[@routes[2]] = outcome
-        payload["reasons_for_noncompliance"] = reasons_for_noncompliance
+        payload["reasons_for_noncompliance"] = reasons_for_noncompliance unless reasons_for_noncompliance.empty?
         payload["required_actions"] = required_actions unless required_actions.empty?
       end
       payload.delete("errors") if payload["errors"].empty?
@@ -149,6 +149,10 @@ class StatuteApi < Sinatra::Base
     return "The required #{item} (#{requirement[item].join(", ")}) does not match the observed_data (#{data[item].join(", ")})."
   end
 
+  def get_date_as_day_of_the_week(date)
+    Date.parse(date).strftime("%A")
+  end
+
   def is_within_constraints?(conditional, requirement, data)
     errors = []
     reasons_for_noncompliance = []
@@ -188,34 +192,41 @@ class StatuteApi < Sinatra::Base
       if requirement["when"].include?("daily")
         # do nothing
       end
-      legal_holidays_present = false
-      weekdays_present = false
-      legal_holidays_found = false
-      weekdays_found = false
-      if requirement["when"].include?("legal_holidays")
-        legal_holidays_present = true
-        legal_holidays = get_legal_holidays(get_date_year(data["when"]))
-        if legal_holidays.include?(data["when"])
-          legal_holidays_found = true
-        end
-      end
-      weekdays = requirement["when"] & ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
-      unless weekdays.empty?
-        weekdays_present = true
-        day = Date.parse(data["when"]).strftime("%A")
-        if weekdays.any?{|d| d == day }
-          weekdays_found = true
-        end
-      end
+      # weekdays and legal holidays
       date_errors = []
-      if weekdays_present && legal_holidays_present
-        date_errors << "weekdays required and not found" unless weekdays_found 
-        date_errors << "legal holidays required and not found" unless legal_holidays_found
-      elsif weekdays_present
-        date_errors << "weekdays required and not found" unless weekdays_found 
-      elsif legal_holidays_present
-        date_errors << "legal holidays required and not found" unless legal_holidays_found
+      legal_holidays_required = false
+      days_of_week_required = false
+      legal_holidays_found = false
+      days_of_week_found = false
+      valid_date = false
+
+      # determine if legal holiday are required
+      if days_to_check.include?("legal_holidays")
+        legal_holidays_required = true
+        legal_holidays = get_legal_holidays(get_date_year(data["when"]))
+        legal_holidays_found = legal_holidays.include?(data["when"])
       end
+      # determine if days of the week are required
+      required_days = requirement['when'] & ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
+      unless required_days.empty?
+        days_of_week_required = true
+        days_of_week_found = required_days.include?(get_date_as_day_of_the_week(data["when"]))
+      end
+
+      if legal_holidays_required && days_of_week_required
+        unless legal_holidays_found || days_of_week_found
+          date_errors << "legal holidays or days of the week not found"
+        end
+      elsif legal_holidays_required
+        unless legal_holidays_found
+          date_errors << "legal holidays required and not found"
+        end
+      elsif days_of_week_required
+        unless days_of_week_found
+          date_errors << "days of the week required and not found"
+        end
+      end
+
       unless date_errors.empty?
         reasons_for_noncompliance += date_errors
       end
