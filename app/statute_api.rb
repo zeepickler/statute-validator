@@ -170,6 +170,7 @@ class StatuteApi < Sinatra::Base
     # requirements 'when' possible values (and any combination of):
     # - daily
     # - legal_holidays
+
     # - Sunday
     # - Monday
     # - Tuesday
@@ -192,6 +193,7 @@ class StatuteApi < Sinatra::Base
       if requirement["when"].include?("daily")
         # do nothing
       end
+
       # weekdays and legal holidays
       date_errors = []
       legal_holidays_required = false
@@ -201,7 +203,7 @@ class StatuteApi < Sinatra::Base
       valid_date = false
 
       # determine if legal holiday are required
-      if days_to_check.include?("legal_holidays")
+      if requirement['when'].include?("legal_holidays")
         legal_holidays_required = true
         legal_holidays = get_legal_holidays(get_date_year(data["when"]))
         legal_holidays_found = legal_holidays.include?(data["when"])
@@ -215,7 +217,7 @@ class StatuteApi < Sinatra::Base
 
       if legal_holidays_required && days_of_week_required
         unless legal_holidays_found || days_of_week_found
-          date_errors << "legal holidays or days of the week not found"
+          date_errors << "legal holidays or days of the week required and not found"
         end
       elsif legal_holidays_required
         unless legal_holidays_found
@@ -301,7 +303,7 @@ class StatuteApi < Sinatra::Base
     end
     if str.include?("/")
       if str.count("/") == 2
-        str.gsub!("/","-")
+        str.tr!("/","-")
       else
         return false, str
       end

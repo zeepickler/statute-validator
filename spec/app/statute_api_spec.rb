@@ -117,7 +117,7 @@ RSpec.describe StatuteApi do
                                 observed_data: {sources: ["cats"],
                                                 value: 95,
                                                 units: "dBA"}}]}
-          expected = {statutes: [{statute: "12.34.567.A", compliance: false}]}.to_json
+          expected = {statutes: [{statute: "12.34.567.A", compliance: false, reasons_for_noncompliance: ["values were not within the included constraints"]}]}.to_json
 
           expect(last_response.status).to eq 200
           expect(last_response.body).to eq expected
@@ -138,14 +138,15 @@ RSpec.describe StatuteApi do
               expect(last_response.body).to eq expected
             end
             it "should determine compliance is false when valid data is supplied outside the requirements" do
-              get "/", {statutes: [{statute: "22.22.222.A", retrieve: ["compliance"]},
-                                  {statute: "22.22.222.C",
-                                   retrieve: ["compliance"],
-                                   observed_data: {sources: ["left_hand"],
-                                                   value: 8,
-                                                   units: "fingers"}}]}
+              get "/", {statutes: [{statute: "22.22.222.A",
+                                    retrieve: ["compliance"]},
+                                   {statute: "22.22.222.C",
+                                    retrieve: ["compliance"],
+                                    observed_data: {sources: ["left_hand"],
+                                                    value: 8,
+                                                    units: "fingers"}}]}
               expected = {statutes: [{statute: "22.22.222.A", compliance: false},
-                                     {statute: "22.22.222.C", compliance: false}]}.to_json
+                                     {statute: "22.22.222.C", compliance: false, reasons_for_noncompliance: ["values were not within the included constraints"]}]}.to_json
 
               expect(last_response.status).to eq 200
               expect(last_response.body).to eq expected
@@ -180,7 +181,7 @@ RSpec.describe StatuteApi do
                                      observed_data: {sources: ["left_hand"],
                                                      value: 4,
                                                      units: "fingers"}}]}
-              expected = {statutes: [{statute: "22.22.222.B", compliance: false},
+              expected = {statutes: [{statute: "22.22.222.B", compliance: false, reasons_for_noncompliance: ["values were not within the included constraints"]},
                                      {statute: "22.22.222.C", compliance: true}]}.to_json
 
               expect(last_response.status).to eq 200
@@ -198,7 +199,7 @@ RSpec.describe StatuteApi do
                                                      value: 8,
                                                      units: "fingers"}}]}
               expected = {statutes: [{statute: "22.22.222.B", compliance: false},
-                                     {statute: "22.22.222.C", compliance: false}]}.to_json
+                                     {statute: "22.22.222.C", compliance: false, reasons_for_noncompliance: ["values were not within the included constraints"]}]}.to_json
 
               expect(last_response.status).to eq 200
               expect(last_response.body).to eq expected
@@ -315,10 +316,9 @@ RSpec.describe StatuteApi do
                                                       value: "3:00",
                                                       units: "time",
                                                       when: "2016-01-11" }}]}
-                expected = {statutes: [{errors: ["weekdays required and not found"], statute: "44.44.444.B"}]}.to_json
+                expected = {statutes: [{statute: "44.44.444.B", compliance: false, reasons_for_noncompliance: ["days of the week required and not found"], }]}.to_json
 
-
-                expect(last_response.status).to eq 400
+                expect(last_response.status).to eq 200
                 expect(last_response.body).to eq expected
               end
             end
@@ -341,7 +341,7 @@ RSpec.describe StatuteApi do
               it "returns false when observed_data when date is outside the requirements" do
                 invalid_dates = ["2016-01-05",
                                  "2016-01-08"]
-                expected = {statutes: [{errors: ["weekdays required and not found"], statute: "44.44.444.C"}]}.to_json
+                expected = {statutes: [{statute: "44.44.444.C", compliance: false, reasons_for_noncompliance: ["days of the week required and not found"], }]}.to_json
                 invalid_dates.each do |invalid_date|
                   get "/", {statutes: [{statute: "44.44.444.C",
                                         retrieve: ["compliance"],
@@ -349,7 +349,7 @@ RSpec.describe StatuteApi do
                                                         value: "3:00",
                                                         units: "time",
                                                         when: invalid_date}}]}
-                  expect(last_response.status).to eq 400
+                  expect(last_response.status).to eq 200
                   expect(last_response.body).to eq expected
                 end
               end
@@ -381,7 +381,7 @@ RSpec.describe StatuteApi do
                 not_legal_holidays_2016 = ["2016-01-02",
                                            "2016-09-04",
                                            "2016-12-24"]
-                expected = {statutes: [{statute: "44.44.444.D", compliance: false}]}.to_json
+                expected = {statutes: [{statute: "44.44.444.D", compliance: false, reasons_for_noncompliance: ["legal holidays required and not found"]}]}.to_json
                 not_legal_holidays_2016.each do |not_legal_holiday|
                   get "/", {statutes: [{statute: "44.44.444.D",
                                         retrieve: ["compliance"],
@@ -422,7 +422,7 @@ RSpec.describe StatuteApi do
               it "returns false when observed_data when date is outside the requirements" do
                 invalid_days = ["2016-12-05",
                                 "2016-12-06"]
-                expected = {statutes: [{statute: "44.44.444.E", compliance: false}]}.to_json
+                expected = {statutes: [{statute: "44.44.444.E", compliance: false, reasons_for_noncompliance: ["legal holidays or days of the week required and not found"]}]}.to_json
                 invalid_days.each do |invalid_day|
                   get "/", {statutes: [{statute: "44.44.444.E",
                                         retrieve: ["compliance"],
