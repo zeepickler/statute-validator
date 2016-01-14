@@ -12,9 +12,15 @@ class StatuteApi < Sinatra::Base
   get '/' do
     content_type :json
     data = params.select{|k,v| ["statute", "retrieve", "observed_data"]}
-    if data.empty?
+    if params["statutes"].nil? 
       status 400
       return {errors: ["No JSON data found."]}.to_json
+    elsif !(params.keys - ["statutes"]).empty?
+      status 400
+      return {errors: ["Irrelvant parameters supplied besides 'statutes'."]}.to_json
+    elsif !(params["statutes"].all?{|hash| (hash.keys - ["statute","retrieve","observed_data"]).empty?})
+      status 400
+      return {errors: ["Irrelvant parameters supplied. Only parameters allowed are 'statute', 'retrieve', and 'observed_data'."]}.to_json
     end
     
     payload_array = []
