@@ -145,7 +145,7 @@ RSpec.describe StatuteApi do
                                     observed_data: {sources: ["left_hand"],
                                                     value: 8,
                                                     units: "fingers"}}]}
-              expected = {statutes: [{statute: "22.22.222.A", compliance: false},
+              expected = {statutes: [{statute: "22.22.222.A", compliance: false, reasons_for_noncompliance: ["dependent statutes were noncompliant"]},
                                      {statute: "22.22.222.C", compliance: false, reasons_for_noncompliance: ["values were not within the included constraints"]}]}.to_json
 
               expect(last_response.status).to eq 200
@@ -198,7 +198,7 @@ RSpec.describe StatuteApi do
                                      observed_data: {sources: ["left_hand"],
                                                      value: 8,
                                                      units: "fingers"}}]}
-              expected = {statutes: [{statute: "22.22.222.B", compliance: false},
+              expected = {statutes: [{statute: "22.22.222.B", compliance: false, reasons_for_noncompliance: ["dependent statutes were noncompliant"]},
                                      {statute: "22.22.222.C", compliance: false, reasons_for_noncompliance: ["values were not within the included constraints"]}]}.to_json
 
               expect(last_response.status).to eq 200

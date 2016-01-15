@@ -103,12 +103,13 @@ class StatuteApi < Sinatra::Base
     end
 
     unless refer_to_section_array.empty?
-      dependant_results = []
+      dependent_results = []
       refer_to_section_array.each do |refer_to_section|
-        dependant_results += refer_to_section["requires"].collect do |dependant|
-          payload_array.select{|payload| payload["statute"] == dependant["statute"]}[0]["compliance"]
+        # determine if all the dependent statutes were true
+        dependent_results += refer_to_section["requires"].collect do |dependent|
+          payload_array.select{|payload| payload["statute"] == dependent["statute"]}[0]["compliance"]
         end
-        result = dependant_results.all?{|d| d == true }
+        result = dependent_results.all?{|d| d == true }
 
         section_with_dependency = payload_array.select{|payload| payload["statute"] == refer_to_section["statute"]}
         unless section_with_dependency[0]["compliance"] == false
@@ -126,6 +127,14 @@ class StatuteApi < Sinatra::Base
           unless payload["compliance"] == false
             payload["compliance"] = payload["refer_to_section_compliance"]
             payload.delete("refer_to_section_compliance")
+            unless payload["compliance"]
+              refer_to_section_message = "dependent statutes were noncompliant"
+              if payload["reasons_for_noncompliance"]
+                payload["reasons_for_noncompliance"] << refer_to_section_message
+              else
+                payload["reasons_for_noncompliance"] = [refer_to_section_message]
+              end
+            end
           end
         end
         payload
