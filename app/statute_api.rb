@@ -144,7 +144,7 @@ class StatuteApi < Sinatra::Base
   end
 
   get '/demo' do
-
+    erb :demo
   end
 
   def return_data(data)
