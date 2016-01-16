@@ -1,5 +1,37 @@
 <html>
   <body>
     <h1>Welcome to the PDX City Code API Demo Page!</h1>
+    <h3>Purpose</h3>
+    <p>The purpose of this tool is to think of the <a href="http://www.portlandonline.com/auditor/index.cfm?c=28148">Code of the City of Portland</a> as data. How is this so?</p>
+    <h3>City Code As Data</h3>
+    <p>Not all, but some statutes involve constraints using numbers. For example, a minimum distance in feet or a maximum noise level in decibels. We can take the data from these statutes and formulate it into something that is meaningful for a computer, like this:</p>
+    <pre><code>
+    "18.10.060.A": {
+      "text": "Maximum sound levels: No person shall operate any equipment or appurtenances thereto
+               in commercial construction activities which exceeds 85 dBA, when measured at 50 feet (15.2 
+               meters) from the source.  This standard shall not apply to trucks (see Section 18.10.020),
+               pile drivers, pavement breakers, scrapers, concrete saws and rock drills.",
+      "requirements": [
+        {"conditional":"include",
+         "source": ["truck",
+                    "pile driver", 
+                    "pavement breaker", 
+                    "scraper", 
+                    "concrete saw", 
+                    "rock drill"],
+         "value": [{"maximum": 85}],
+         "units": "dBA"}
+      ]
+    }
+    </code></pre>
+    <p>Here we are looking at the statute <b>
+      <a href="http://www.portlandonline.com/auditor/index.cfm?c=28709&a=541431">18.10.060.A</a></b> from the section <b>Maximum Permissible Sound Levels for Construction Activities and Equipment</b> from <b>Title 18 Noise Control</b>. The data is broken into two sections <i>text</i> and <i>requirements</i>. The <i>text</i> section, as you can see, is the actual text of the statute. This is handy for reference when looking at the data itself, but of course can also be retrieved to display on a website or within an app. The <i>requirements</i> section is the actual translation of the statute into data. The use of "conditional" is to explain if for compliance the statute must be within the specified requirement ("include") or outside the requirement ("exclude"), "source" is a way of breaking up the subjects we're talking about, "value" represents our constraint (here a "maximum" of 85), and "units" to describe the units of measurement (decibels in this example).</p>
+
+    <p>At this point, we have described how City Code gets translated into data. For the purposes of this prototype, I have converted the entire section of 18.10.060 (A-F) into data, which is stored as a file. Sidenote: For the computer nerds among you, you will recognize the format of the code above as JSON, a useful data format frequently used for APIs and well-liked by software developers.</p>
+    
+    <h3>What is an API?</h3>
+    <p>Before we discuss how to retrieve the above data, it's important to understand what an API is and does. <a href="https://en.wikipedia.org/wiki/Application_programming_interface">API</a> is an acronym for <b>A</b>pplication <b>P</b>rogramming <b>I</b>nterface.
+    <h3>Retrieval of Text Demo</h3>
+    <p>Now let's say that I want to retrieve the text from the statute above. To do this, I send a GET request to the API 
   </body>
 </html>
