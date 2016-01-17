@@ -40,33 +40,64 @@
     <pre><code id='text_example'></code></pre>
     <p>As you can see, we are interested in the statute "18.10.060.A" and wish to retrieve "text".</p>
     <p>Go ahead and <button onClick=retrieveText()>Retrieve Text</button> now:</p>
-    <p id='get_text_explanation' style="display:none;">Here is the data we get back. As you can see, the statute we requested is listed. As well, we get the text of the statute as we expect. Now we can display this text in our app.</p>
     <pre id='get_text'></pre>
+    <p id='get_text_explanation' style="display:none;">Here is the data we get back. As you can see, the statute we requested is listed. As well, we get the text of the statute as we expect. Now we can display this text in our app.</p>
 
     <h3>Statute Requirements Retrieval Demo</h3>
-    <p>So far, so good! Next, let's imagine that we need to draw the red line in our app representing the maximum permissible sound level for construction activities. We need to know what number is required by law. To retrieve a statute's requirements, we send a GET request to the API, providing it the following data:</p>
+    <p>So far, so good! Next, let's imagine that we want to display a red line on a graph in our app representing the maximum permissible sound level for construction activities. We need to know what this number is as required by law. To retrieve a statute's requirements, we send a GET request to the API, providing it the following data:</p>
     <pre><code id='requirements_example'></code></pre>
     <p>In this case, we supply the statute like before, but instead retrieve "requirements". (Note that we could have requested <i>both</i> text and requirements for the statute.)</p>
     <p>Alright, time to <button onClick=retrieveRequirements()>Retrieve Requirements</button> and see what happens:</p>
-    <p id='get_requirements_explanation' style="display:none;">Presto! As before, we get the statute we requested as well as the requirements for this statute. We now know that the maximum value is 85 decibels and we can display this information in our app in a way that is helpful for our users.
     <pre id='get_requirements'></pre>
+    <p id='get_requirements_explanation' style="display:none;">Presto! As before, we get the statute we requested as well as the requirements for this statute. We now know that the maximum value is 85 decibels and we can display this information in our app in a way that is helpful for our users.</p>
+    
 
+    <h3>Interlude: Thoughts On Compliance</h3>
+    <p>The most complicated part of this project has been thinking about how to translate and organize the logic of the law into structured data that works across the statutes under my study (18.10.060 (A-F)). My goal is to ensure that the legal data structure is flexible enough as to make it applicable to law in any legal context (city, state, federal) and anywhere regulations are used.</p>
+    <p>Once we have the law as structured data, we can use it to do something quite useful, namely, compare the legal requirements to observed data to determine compliance. In the City of Beaverton, for example, a sensor records the speed of the car as it moves down the road. If it goes over the speed limit, a camera takes a picture of the car in question. If this device was in a school zone during school days, the requirement would be a maximum speed of 20 mph and the observed data is the speed of the car as it was recorded. In order for the device to determine if it should take a picture, the number "20" had to be encoded into the device. However, using an API, we can simply supply the recorded speed (the observed data) to determine if the driver complies with the law. By relying on an API, we don't have to store legal requirement data on each device and manually update every device should the law change. In our case, should the law change, only the API itself is updated. It is worth pointing out that the decision to separate the API from the sensor was an intentional architectural decision. There are two reasons for this:</p>
+    <ol>
+      <li>It puts the responsibility on the software developer writing an application to retrieve the sensor data and pass it onto the API. Should a radar sensor change its data format or should the "industry standard" data format for a sensor be updated, we localize this complexity down to the level of the software application using the sensor data.</li>
+      <li>Scientists might discover a new scientific unit of measure, causing engineers to create a whole new category of devices to measure this scientific unit. This would result in major complexity to coordinate all the various new implementations of each sensor data format into the codebase of the API. Instead, all we have to do is denote the name of the new unit of measure, ie. "'units': 'zorgawatts'" in our requirements.</li>
+    </ol>
+    <p>As a result, the API becomes a very simple and flexible system, able to keep up with changes in science and technology.</p>
+    <h3>Statute Compliance Retrieval Demo</h3>
+    <p>For the final demo, we are interested to know whether we are in compliance with the law. In keeping with our Noise Control theme, imagine that we have a device on a construction site. The device has a microphone that can pick up noises coming from the construction site. The device picks up a reading of 92 decibels. Using some software on this device, this sensor information is converted into observed data, like so:</p>
+    <pre><code id="observed_data_example"></code></pre>
+    <p>Now, the software takes this observed data and sends a GET request to the API to determine compliance:</p>
+    <pre><code id="compliance_example"></code></pre>
+    <p>Drumroll! It's time to <button onClick=retrieveCompliance()>Retrieve Compliance</button></p>
+    <pre id='get_compliance'></pre>
+    <div id='get_compliance_explanation' style="display:none;">
+      <p>Ok. Let's break this one down. The API returns our statute in question, which we expect. The "compliance" value is 'false', which means that we are not in compliance with the law. (This is what we expect as the requirement is a maximum of 85 dBA.) The "compliance" value can either be 'true' (in compliance) or 'false' (non-compliance). In the case that we are non-compliant, an additional attribute "reasons_for_noncompliance" will appear. This will give us some indication as to why we failed to comply.</p>
+      <p>Once our software developer gets this information back from the API, one thing the software might do is send a text message to the foreman as well as the construction project's liason at city hall if the results are in non-compliance (as our example shows).</p>
+    </div>
+    <h3>Benefits of the API</h3>
+    <ul>
+      <li>Architects, Engineers, City Planners, and many other professionals jobs depend /// on the technical requirements found in city code.</li>
+    </ul>
+    <h3>Challenges Regarding the API</h3>
     
   </body>
   <script>
   $(function (){
-    var get_text_data = {statutes: [{statute: "18.10.060.A", retrieve: ["text"]}]};
+    get_text_data = {statutes: [{statute: "18.10.060.A", retrieve: ["text"]}]};
     $('#text_example').html(JSON.stringify(get_text_data, null, 2));
 
-    var get_requirements_data = {statutes: [{statute: "18.10.060.A", retrieve: ["requirements"]}]};
+    get_requirements_data = {statutes: [{statute: "18.10.060.A", retrieve: ["requirements"]}]};
     $('#requirements_example').html(JSON.stringify(get_requirements_data, null, 2));
+
+    observed_data = {sources: ["construction site"], value: 92, units: "dBA"};
+    $('#observed_data_example').html(JSON.stringify(observed_data, null, 2));
+
+    get_compliance_data = {statutes: [{statute: "18.10.060.A", retrieve: ["compliance"], observed_data: observed_data}]};
+    $('#compliance_example').html(JSON.stringify(get_compliance_data, null, 2));
   });
   function retrieveText(){
     $.ajax({
       url: '/',
       type: 'GET',
       beforeSend: function(xhr){xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));},
-      data: {statutes: [{statute: "18.10.060.A", retrieve: ["text"]}]},
+      data: get_text_data,
       success: function(data) {
         $("#get_text").html(JSON.stringify(data, null, 2));
         $("#get_text_explanation").show();
@@ -81,13 +112,28 @@
       url: '/',
       type: 'GET',
       beforeSend: function(xhr){xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));},
-      data: {statutes: [{statute: "18.10.060.A", retrieve: ["requirements"]}]},
+      data: get_requirements_data,
       success: function(data) {
         $("#get_requirements").html(JSON.stringify(data, null, 2));
         $("#get_requirements_explanation").show();
       },
       error: function(x, textStatus, error){
         alert("Sorry, there was an error retrieving the requirements. Please try again.");
+      }
+    });
+  }
+  function retrieveCompliance(){
+    $.ajax({
+      url: '/',
+      type: 'GET',
+      beforeSend: function(xhr){xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));},
+      data: get_compliance_data,
+      success: function(data) {
+        $("#get_compliance").html(JSON.stringify(data, null, 2));
+        $("#get_compliance_explanation").show();
+      },
+      error: function(x, textStatus, error){
+        alert("Sorry, there was an error retrieving compliance results. Please try again.");
       }
     });
   }

@@ -3,8 +3,8 @@
     "text": "Example of a valid statute.",
     "requirements": [
       {"conditional":"include",
-       "sources": ["cats",
-                  "dogs"],
+       "sources": {"include": ["cats",
+                  "dogs"]},
        "value": [{"maximum": 85}],
        "units": "dBA"}
     ]
@@ -26,7 +26,7 @@
     "requirements": [
       {"refer_to_section": [{"statute": "22.22.222.B", "requires": [{"statute": "22.22.222.C"}] }]},
       {"conditional": "include",
-       "sources": ["right_hand"],
+       "sources": {"include": ["right_hand"]},
        "value": [{"maximum": 5}],
        "units": "fingers"}
     ]
@@ -35,7 +35,7 @@
     "text": "Example of a dependent statute.",
     "requirements": [
       {"conditional": "include",
-       "sources": ["left_hand"],
+       "sources": {"include":["left_hand"]},
        "value": [{"maximum": 5}],
        "units": "fingers"}
     ]
@@ -44,7 +44,7 @@
     "text": "Example where the sources include all.",
     "requirements": [
       {"conditional": "include",
-       "sources": ["all"],
+       "sources": {"include":["all"]},
        "value": [{"minimum": 2}],
        "units": "feet"}
     ]
@@ -53,7 +53,7 @@
     "text": "Example where when is daily.",
     "requirements": [
       {"conditional": "include",
-       "sources": ["vampires"],
+       "sources": {"include": ["vampires"]},
        "value":[{"minimum": "2:00"}],
        "units": "time",
        "when": ["daily"]}
@@ -63,7 +63,7 @@
     "text": "Example where when is a single day.",
     "requirements": [
       {"conditional": "include",
-       "sources": ["vampires"],
+       "sources": {"include": ["vampires"]},
        "value":[{"minimum": "2:00"}],
        "units": "time",
        "when": ["Sunday"]}
@@ -73,7 +73,7 @@
     "text": "Example where when has multiple days.",
     "requirements": [
       {"conditional": "include",
-       "sources": ["vampires"],
+       "sources": {"include": ["vampires"]},
        "value":[{"minimum": "2:00"}],
        "units": "time",
        "when": ["Wednesday","Thursday"]}
@@ -83,7 +83,7 @@
     "text": "Example where when has legal_holidays.",
     "requirements": [
       {"conditional": "include",
-       "sources": ["vampires"],
+       "sources": {"include": ["vampires"]},
        "value":[{"minimum": "2:00"}],
        "units": "time",
        "when": ["legal_holidays"]}
@@ -93,7 +93,7 @@
     "text": "Example where when has legal_holidays and multiple days.",
     "requirements": [
       {"conditional": "include",
-       "sources": ["vampires"],
+       "sources": {"include": ["vampires"]},
        "value":[{"minimum": "2:00"}],
        "units": "time",
        "when": ["Thursday", "Friday", "legal_holidays"]}

@@ -66,7 +66,7 @@ RSpec.describe StatuteApi do
         end
         it "returns the requirements for a valid statute with requirements when supplied with a valid statute and retrieve requirements" do
           get "/", {statutes: [{statute: "12.34.567.A", retrieve: ["requirements"]}]}
-          expected = {statutes: [{statute: "12.34.567.A", requirements: [{conditional:"include",sources: ["cats","dogs"],value: [{maximum: 85}],units: "dBA"}]}]}.to_json
+          expected = {statutes: [{statute: "12.34.567.A", requirements: [{conditional:"include",sources: {"include" => ["cats","dogs"]} ,value: [{maximum: 85}],units: "dBA"}]}]}.to_json
         
           expect(last_response.status).to eq 200
           expect(last_response.body).to eq expected

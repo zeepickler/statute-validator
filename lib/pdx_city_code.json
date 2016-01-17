@@ -3,12 +3,12 @@
     "text": "Maximum sound levels: No person shall operate any equipment or appurtenances thereto in commercial construction activities which exceeds 85 dBA, when measured at 50 feet (15.2 meters) from the source.  This standard shall not apply to trucks (see Section 18.10.020), pile drivers, pavement breakers, scrapers, concrete saws and rock drills.",
     "requirements": [
       {"conditional":"include",
-       "source": ["truck",
-                  "pile driver", 
-                  "pavement breaker", 
-                  "scraper", 
-                  "concrete saw", 
-                  "rock drill"],
+       "sources": {"exclude": ["truck",
+                               "pile driver", 
+                               "pavement breaker", 
+                               "scraper", 
+                               "concrete saw", 
+                               "rock drill"]},
        "value": [{"maximum": 85}],
        "units": "dBA"}
     ]
@@ -17,19 +17,19 @@
     "text": "Night, weekend, and legal holidays limitation: From 6:00 p.m. to 7:00 a.m. the following morning, and 6:00 p.m. Saturday to 7:00 a.m. the following Monday, and on legal holidays, the permissible sound levels of Section 18.10.010 shall apply to all construction activities except by variance or for reasons of emergency.  The exempted equipment of Section 18.10.060 A is not exempted during these hours.  For purposes of this Subsection, construction activities on a public road within a zone shall be considered as taking place on private property within that zone.",
     "requirements":[       
       {"conditional":"exclude",
-       "source": ["all"],
+       "sources": {"include": ["all"]},
        "value": [{"minimum": "18:00", "maximum": "24:00"},
                  {"minimum": "00:00", "maximum": "07:00"}],
        "units": "time",
        "when": ["daily"]},
       {"conditional":"exclude",
-       "source": ["all"],
-       "value": {"minimum": "07:00", "maximum": "18:00"},
+       "sources": {"include": ["all"]},
+       "value": [{"minimum": "07:00", "maximum": "18:00"}],
        "units": "time",
        "when": ["Sunday"]},
       {"conditional":"include",
-       "source": ["all"],
-       "value": {"minimum": "00:00", "maximum": "24:00"},
+       "sources": {"include": ["all"]},
+       "value": [{"minimum": "00:00", "maximum": "24:00"}],
        "units": "time",
        "when": ["legal_holidays"],
        "refer_to_section": [{"statute":"18.10.060.B","requires":[{"statute":"18.10.010"}]}]}
@@ -60,18 +60,18 @@
                             ]
       },
       {"conditional": "exclude",
-       "sources": ["pile driver"],
+       "sources": {"include": ["pile driver"]},
        "values": [{"minimum":"18:00", "maximum":"24:00"},
                   {"minimum":"00:00", "maximum":"08:00"}],
        "units": "time",
        "when": ["daily"]},
       {"conditional": "exclude",
-       "sources": ["pile driver"],
+       "sources": {"include": ["pile driver"]},
        "values": [{"minimum":"08:00", "maximum": "18:00"}],
        "units": "time",
        "when": ["Saturday","Sunday"]},
       {"conditional": "exclude",
-       "sources": ["pile driver"],
+       "sources": {"include": ["pile driver"]},
        "values": [{"minimum":"00:00", "maximum": "24:00"}],
        "units": "time",
        "when": ["legal_holidays"]}
@@ -81,10 +81,10 @@
     "text": "The owner of a site on which pile driving will occur shall cause a notice to be mailed to all residences within 500 feet of the site.  Mailing will occur no fewer than 30 days prior to the commencement of pile driving.  The notice shall list the expected starting and ending dates for pile driving and give a telephone number for further information.",
     "requirements":[
       {"conditional": "include",
-       "source": ["pile driver construction site"],
+       "sources": {"include": ["pile driver construction site"]},
        "values": [{"maximum": 500}],
        "units": "feet",
-       "location": "residence",
+       "location": {"include":["residence"]},
        "required_action": "A notice to be mailed to residence. Mailing will occur no fewer than 30 days prior to the commencement of pile driving.  The notice shall list the expected starting and ending dates for pile driving and give a telephone number for further information."
       }
     ]

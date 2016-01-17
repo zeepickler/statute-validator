@@ -14,7 +14,6 @@ class StatuteApi < Sinatra::Base
     found_params = params
     params = de_jsonify_hash(found_params)
 
-
     data = params.select{|k,v| ["statute", "retrieve", "observed_data"]}
     if params["statutes"].nil? 
       status 400
@@ -174,6 +173,28 @@ class StatuteApi < Sinatra::Base
     data.select{|k,v| ["sources","value","units","location","when","conditional","refer_to_section","required_action"].include?(k) }
   end
 
+  def compare_data(requirement, data, item, reasons_for_noncompliance)
+    item_results = requirement[item].map do |conditional, value|
+      item_result = case conditional
+                    when "include"
+                      ((requirement[item][conditional] & data[item]) == data[item]) || (requirement[item][conditional] == ["all"])
+                    when "exclude"
+                      (requirement[item][conditional] & data[item]).empty? || (requirement[item][conditional] != ["all"])
+                    end
+      {conditional => item_result}
+    end
+    unless item_results.all?{|hash| hash.values.first == true }
+      item_results.each do |hash|
+        hash.each do |conditional, result|
+          unless result
+            reasons_for_noncompliance << comparison_reason(requirement[item][conditional], data, item)
+          end
+        end
+      end
+    end
+    return reasons_for_noncompliance
+  end
+
   def comparison_reason(requirement, data, item)
     return "The required #{item} (#{requirement[item].join(", ")}) does not match the observed_data (#{data[item].join(", ")})."
   end
@@ -188,8 +209,11 @@ class StatuteApi < Sinatra::Base
     requirement = extract_relavent_data(requirement)
     data = extract_relavent_data(data)
 
-    unless ((requirement["sources"] & data["sources"]) == data["sources"]) || (requirement["sources"] == ["all"])
-      reasons_for_noncompliance << comparison_reason(requirement, data, "sources")
+    unless requirement["sources"].nil? || requirement["sources"].empty?
+      reasons_for_noncompliance = compare_data(requirement, data, "sources", reasons_for_noncompliance)
+    end
+    unless requirement["location"].nil? || requirement["location"].empty?
+      reasons_for_noncompliance = compare_data(requirement, data, "location", reasons_for_noncompliance)
     end
     unless requirement["units"] == data["units"]
       reasons_for_noncompliance << comparison_reason(requirement, data, "units")
