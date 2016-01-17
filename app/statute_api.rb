@@ -2,7 +2,7 @@ require 'sinatra'
 require 'json'
 require 'chronic'
 require 'date'
-
+require 'byebug'
 class StatuteApi < Sinatra::Base
   before do
     @statutes = JSON.parse(File.read(ENV["STATUTE_SOURCE_FILE"]))
@@ -11,6 +11,10 @@ class StatuteApi < Sinatra::Base
 
   get '/' do
     content_type :json
+    found_params = params
+    params = de_jsonify_hash(found_params)
+
+
     data = params.select{|k,v| ["statute", "retrieve", "observed_data"]}
     if params["statutes"].nil? 
       status 400
@@ -145,6 +149,16 @@ class StatuteApi < Sinatra::Base
 
   get '/demo' do
     erb :demo
+  end
+
+  def de_jsonify_hash(hash)
+    #{"statutes"=>{"0"=>{"statute"=>"18.10.060.A", "retrieve"=>["text"]}}}
+    if !hash["statutes"].nil? && hash["statutes"].class == Hash
+      if hash["statutes"].keys.all?{|n| /[0-9]+/ =~ n}
+        hash["statutes"] = hash["statutes"].values
+      end
+    end
+    return hash
   end
 
   def return_data(data)

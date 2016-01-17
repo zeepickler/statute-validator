@@ -1,4 +1,7 @@
 <html>
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  </head>
   <body>
     <h1>Welcome to the PDX City Code API Demo Page!</h1>
     <h3>Purpose</h3>
@@ -30,8 +33,63 @@
     <p>At this point, we have described how City Code gets translated into data. For the purposes of this prototype, I have converted the entire section of 18.10.060 (A-F) into data, which is stored as a file. Sidenote: For the computer nerds among you, you will recognize the format of the code above as JSON, a useful data format frequently used for APIs and well-liked by software developers.</p>
     
     <h3>What is an API?</h3>
-    <p>Before we discuss how to retrieve the above data, it's important to understand what an API is and does. <a href="https://en.wikipedia.org/wiki/Application_programming_interface">API</a> is an acronym for <b>A</b>pplication <b>P</b>rogramming <b>I</b>nterface.
-    <h3>Retrieval of Text Demo</h3>
-    <p>Now let's say that I want to retrieve the text from the statute above. To do this, I send a GET request to the API 
+    <p>Before we discuss how to retrieve the above data, it's important to understand what an API is and does. <a href="https://en.wikipedia.org/wiki/Application_programming_interface">API</a> is an acronym for <b>A</b>pplication <b>P</b>rogramming <b>I</b>nterface. Just as a McDonald's customer can order a "#1" from the menu, an API allows a software developer to use a menu of handy computer commands giving them access to a service in order to perform some useful work. You might even be using an API every day without realizing it. For example, in the mobile game Candy Crush Saga, it asks you to sign into Facebook. In order for the game to allow you to sign in and use your profile picture in-game, it is using an API provided by <a href="https://developers.facebook.com/products/login">Facebook</a>. A software developer had to look up the commands in Facebook's API documentation and then write the commands into their code to pull off this feat. The API commands execute in the blink of an eye and allows the developer access to services that creates a richer experience for the game player. Before we leave this section, it's interesting to note that while APIs are often thought of as having to do with the Web, they also may refer to off-line software tools as well. For example, Apple provides an API called <a href="https://developer.apple.com/metal/">Metal</a>, which gives app developers access to the graphics hardware on Apple mobile devices in order to improve the performance of games and videos.</p>
+    
+    <h3>Statute Text Retrieval Demo</h3>
+    <p>Imagine we have an app with a red line representing the maximum permissible sound level for construction activities. We want to provide extra information about what the red line means by displaying the text of the statute. To retrieve a statute's text, we send a GET request to the API, providing it the following data:</p>
+    <pre><code id='text_example'></code></pre>
+    <p>As you can see, we are interested in the statute "18.10.060.A" and wish to retrieve "text".</p>
+    <p>Go ahead and <button onClick=retrieveText()>Retrieve Text</button> now:</p>
+    <p id='get_text_explanation' style="display:none;">Here is the data we get back. As you can see, the statute we requested is listed. As well, we get the text of the statute as we expect. Now we can display this text in our app.</p>
+    <pre id='get_text'></pre>
+
+    <h3>Statute Requirements Retrieval Demo</h3>
+    <p>So far, so good! Next, let's imagine that we need to draw the red line in our app representing the maximum permissible sound level for construction activities. We need to know what number is required by law. To retrieve a statute's requirements, we send a GET request to the API, providing it the following data:</p>
+    <pre><code id='requirements_example'></code></pre>
+    <p>In this case, we supply the statute like before, but instead retrieve "requirements". (Note that we could have requested <i>both</i> text and requirements for the statute.)</p>
+    <p>Alright, time to <button onClick=retrieveRequirements()>Retrieve Requirements</button> and see what happens:</p>
+    <p id='get_requirements_explanation' style="display:none;">Presto! As before, we get the statute we requested as well as the requirements for this statute. We now know that the maximum value is 85 decibels and we can display this information in our app in a way that is helpful for our users.
+    <pre id='get_requirements'></pre>
+
+    
   </body>
+  <script>
+  $(function (){
+    var get_text_data = {statutes: [{statute: "18.10.060.A", retrieve: ["text"]}]};
+    $('#text_example').html(JSON.stringify(get_text_data, null, 2));
+
+    var get_requirements_data = {statutes: [{statute: "18.10.060.A", retrieve: ["requirements"]}]};
+    $('#requirements_example').html(JSON.stringify(get_requirements_data, null, 2));
+  });
+  function retrieveText(){
+    $.ajax({
+      url: '/',
+      type: 'GET',
+      beforeSend: function(xhr){xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));},
+      data: {statutes: [{statute: "18.10.060.A", retrieve: ["text"]}]},
+      success: function(data) {
+        $("#get_text").html(JSON.stringify(data, null, 2));
+        $("#get_text_explanation").show();
+      },
+      error: function(x, textStatus, error){
+        alert("Sorry, there was an error retrieving the text. Please try again.");
+      }
+    });
+  }
+  function retrieveRequirements(){
+    $.ajax({
+      url: '/',
+      type: 'GET',
+      beforeSend: function(xhr){xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));},
+      data: {statutes: [{statute: "18.10.060.A", retrieve: ["requirements"]}]},
+      success: function(data) {
+        $("#get_requirements").html(JSON.stringify(data, null, 2));
+        $("#get_requirements_explanation").show();
+      },
+      error: function(x, textStatus, error){
+        alert("Sorry, there was an error retrieving the requirements. Please try again.");
+      }
+    });
+  }
+  </script>
 </html>
