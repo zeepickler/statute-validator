@@ -73,10 +73,34 @@
     </div>
     <h3>Benefits of the API</h3>
     <ul>
-      <li>Architects, Engineers, City Planners, and many other professionals jobs depend /// on the technical requirements found in city code.</li>
+      <li><b>Privacy</b> - The API does not involve personally identifying information and observed data used to determine compliance is used for comparison purposes only and then removed from computer memory.</li>
+      <br>
+      <li><b>Statutes As Data</b> - Once statutes are converted into data, the requirements can be embedded into software applications. While professionals and city planners traditionally look up the laws in books or online, being able to embed and display these contraints directly into the design and planning software speed up this process and ensure each technical constraint is being met.</li>
+      <br>
+      <li><b>Decreasing Costs of Sensors</b> - As sensors continue to become cheaper and cheaper, it is inevitable that they will continue to find new use cases in consumer and government applications. Building an API at this point in time connects the legal end of this "sensor ecosystem" toward roles in department management, oversight, and enforcement.</li> 
+      <br>
+      <li><b>Automated Determination of Compliance</b> - The major innovation of this API is the ability to validate statutes involving quantitative data. Using sensors to collect data and the usage of the API for compliance validation removes the need for people in the information gathering process and the information analysis process. It all happens in fractions of a second.</li>
+      <br>
+      <li><b>Compliance at Scale</b> - In the demo above, we used the example of determining compliance of noise levels at a single construction site. However, in actual practice, the API would service this validation for construction sites all over Portland.  When we can turn observations into data, we can suck up large quantities of such data and process it at once. For example, using sophisticated image recognition, GPS, and detailed City maps of parking zones, it would be plausible to take a high resolution satellite map of the entire city of Portland and rapidly locate every illegally parked car. When these levels of scale are achieved, it would free up the entire parking enforcement department to work on more challenging problems in the Transportation Department.</li>
+      <br>
+      <li><b>Continuous Compliance</b> - In software development, there is methodology called "Test Driven Development" where the code being written has a 1:1 relationship with tests to verify the code has the behavior we expect. Once tests are written, it becomes trivial to run the tests and so tests are run frequently in the software development cycle. Similarly, once automated compliance processes exist as with this API, it becomes trivial to run them frequently. It is plausible to imagine a scenario where a driver doesn't go to the DEQ every two years, but instead on-board sensors provided by the DEQ continuously monitor the health of the vehicle.  Continuous monitoring will make it tougher for automobile manufacturers to skirt the law, as was the case of <a href="https://en.wikipedia.org/wiki/Volkswagen_emissions_scandal">Volkswagen.</a></li>
+      <br>
+      <li><b>Environmental Management</b> - By building a body of technical parameters based on scientific research, it is possible to say what constitutes a healthy forest or a healthy river in terms of the presence or absence of chemicals (determined by sensors) as well as the presence or absence of biological species (determined by image recognition). Given such a spectrum of health, we can begin to give the health of a forest or stream a grade (such as A-F). Based on a specific grade, certain actions may need to be taken or certain recreational activities prohibitied. Using this API, we can then determine the grade and update various LED signs (ie. "No Swimming or Hunting today") and alert Land Management of any changes in environmental health.</li>
+      <br>
+      <li><b>Promotion of Constrained Legislation</b> - If such an API is put into practice, my hope is that it will serve as a handy reminder for lawmakers to seek ways where legislation under deliberation can be constrained within quantitative requirements. By legislating only where we need it, it serves the maxim of Jefferson who said "That government is best which governs least."</li>
     </ul>
     <h3>Challenges Regarding the API</h3>
-    
+    <ul>
+      <li><b>Data Integrity</b> - Ensuring that the observed data coming from the sensors is very important. Careful thought must be put into the backup systems and security for such a device. If devices are, for example, housed in citizen's automobiles, thought will have to be put into tamper-proofing the sensors. In another sense of integrity, devices may be toyed with (like putting a pillow over a microphone in the case of a noise control sensor). Who, indeed, will watch the watchers?</li>
+      <br>
+      <li><b>Legislation Cycles</b> - As new and revised laws come into effect, the software developer maintaining such an API will need ample time to make the needed updates to the API. This process has to be kept in sync so when the law goes into effect, the API changes go into effect simultaneously.</li>
+      <br>
+      <li><b>Syncing of Downstream Sensor Software</b> - Similarly, software developers making apps using the API will need to keep in sync with the legislation process so their data in accurate and new legal requirements are addressed in the software.</li>
+      <br>
+      <li><b>Voter Unpopularity of Automated Enforcement</b> - Most critical to the success of the API is how it is visibly seen in public toward enforcement of the law. In looking at traffic enforcement cameras, it is safe to say there was much <a href="https://en.wikipedia.org/wiki/Traffic_enforcement_camera#Controversy">controversy</a> surrounding their usage. The specific case in question is where automated enforcement processes are used against a person.  In one sense, it is quite literally an inhumane and antisocial approach to enforcement.  "Human cyborg relations" will be a challenging area to get right. As such, it is important to initially focus on those areas like operational efficiency, where gains can immediately be seen. An alternate strategy is to use this API only for "self-improvement" purposes as a negative feedback loop. The rationale being that it is an authoritative source because no human oversight is involved. Using Fitbit as an example of this strategy, when people are presented with the data of where they are and where they need to be, it becomes easier to self-correct.</li>
+    </ul>
+    <h3>Conclusion</h3>
+    <p>I hope you now have a better idea of my goals for this API, how it works, and the vision for what it can become. It was a good challenge for my skills and I had a lot of fun putting this prototype together. Thank you for your time!</p>
   </body>
   <script>
   $(function (){
