@@ -1,28 +1,24 @@
 # Purpose
 #### The Statute Validator has three purposes:
-#### Retrieve the text of a statute.
+### Retrieve the text of a statute.
 
 Example: Get the text of Title 21 Chapter 21.04.080.
 
 HTTP GET with JSON data:
 
 ``` javascript
-[{
- statute: "21.04.080",
- retrieve: ["text"]
-}]
+{statutes: [{statute: "21.04.080",
+            retrieve: ["text"]}]}
 ```
 
 HTTP Response:
 
 ``` javascript
-[{
- statute: "21.04.080",
- text: `The Chief Engineer is a Licensed Professional Engineer in charge of the Bureau
- engineering staff. The Chief Engineer, or the Chief Engineer's designee, is responsible
- for establishing, maintaining, and enforcing engineering and technical standards for
- design and construction of the water system.`
-}]
+{statutes: [{statute: "21.04.080",
+             text: `The Chief Engineer is a Licensed Professional Engineer in charge of the Bureau
+                    engineering staff. The Chief Engineer, or the Chief Engineer's designee, is responsible
+                    for establishing, maintaining, and enforcing engineering and technical standards for
+                    design and construction of the water system.`}]}
 ```
 
 #### Retrieve the requirements of a statute that has corresponding quantitative requirements.
