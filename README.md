@@ -16,9 +16,9 @@ HTTP Response:
 ``` javascript
 {statutes: [{statute: "21.04.080",
                 text: `The Chief Engineer is a Licensed Professional Engineer in charge of the Bureau
-                       engineering staff. The Chief Engineer, or the Chief Engineer's designee, is responsible
-                       for establishing, maintaining, and enforcing engineering and technical standards for
-                       design and construction of the water system.`}]}
+                       engineering staff. The Chief Engineer, or the Chief Engineer's designee, is 
+                       responsible for establishing, maintaining, and enforcing engineering and 
+                       technical standards for design and construction of the water system.`}]}
 ```
 
 ##### Retrieve the requirements of a statute (only for statutes with quantitative requirements).
@@ -59,10 +59,13 @@ HTTP Response:
                              value: [{minimum: 20},
                                      {maximum: 40}],
                              units: "psi",
-                             optional: `The water user may choose to install a booster pump system on the premises 
-                                        to improve the working of the private plumbing system. The property owner or ratepayer is responsible for the installation, operation and maintenance of 
-                                        any pressure boosting system. The addition of a booster pump will require an appropriate backflow prevention assembly be installed on the water service, 
-                                        on private property, and directly adjacent to the property line, as required by
+                             optional: `The water user may choose to install a booster pump system on the 
+                                        premises to improve the working of the private plumbing system. 
+                                        The property owner or ratepayer is responsible for the installation, 
+                                        operation and maintenance of any pressure boosting system. The 
+                                        addition of a booster pump will require an appropriate backflow 
+                                        prevention assembly be installed on the water service, on private 
+                                        property, and directly adjacent to the property line, as required by
                                         City Code Section 21.12.320.`}]}
 ```
 
