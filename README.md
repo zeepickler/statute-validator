@@ -59,7 +59,7 @@ HTTP Response:
                              value: [{minimum: 20},
                                      {maximum: 40}],
                              units: "psi",
-                             optional: "The water user may choose to install a booster pump system on the premises to improve the working of the private plumbing system. The property owner or ratepayer is responsible for the installation, operation and maintenance of any pressure boosting system. The addition of a booster pump will require an appropriate backflow prevention assembly be installed on the water service, on private property, and directly adjacent to the property line, as required by City Code Section 21.12.320."}]}
+                             optional: `The water user may choose to install a booster pump system on the premises to improve the working of the private plumbing system. The property owner or ratepayer is responsible for the installation, operation and maintenance of any pressure boosting system. The addition of a booster pump will require an appropriate backflow prevention assembly be installed on the water service, on private property, and directly adjacent to the property line, as required by City Code Section 21.12.320.`}]}
 ```
 
 ##### Determine statute compliance by providing the observed quantitative data.
