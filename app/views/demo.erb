@@ -50,9 +50,9 @@
     <pre id='get_requirements'></pre>
     <p id='get_requirements_explanation' style="display:none;">Presto! As before, we get the statute we requested as well as the requirements for this statute. We can now use this information to display the red line at 85 decibels on the graph in our app.</p>
 
-    <h3>Interlude: Thoughts On Compliance</h3>
-    <p>The most complicated part of this project has been thinking about how to translate and organize the logic of the law into structured data that works across the statutes under my study (18.10.060 (A-F)). My goal is to ensure that the legal data structure is flexible enough as to make it applicable to law in any legal context. Once we have the law as structured data, we can use it to do something quite useful, namely, compare the legal requirements to some observed data to determine compliance. In the City of Beaverton, for example, a sensor records the speed of the car as it moves down the road. If it goes over the speed limit, a camera takes a picture. If this device was in a school zone during school days, the <i>requirement</i> would be a maximum speed of 20 mph and the <i>observed data</i> is the speed of the car as it was recorded. Then, the software makes a decision using this data to determine compliance, taking a picture if the driver was in non-compliance with the law.</p>
     <h3>Statute Compliance Retrieval Demo</h3>
+    <p>Once we have the law as structured data, we can use it to do something quite useful, namely, compare the legal requirements to some observed data to determine compliance. In the City of Beaverton, for example, a sensor records the speed of the car as it moves down the road. If it goes over the speed limit, a camera takes a picture. If this device was in a school zone during school days, the <i>requirement</i> would be a maximum speed of 20 mph and the <i>observed data</i> is the speed of the car as it was recorded. Then, the software makes a decision using this data to determine compliance, taking a picture if the driver was in non-compliance with the law.</p>
+
     <p>For our final demo, we are interested to know whether we are in compliance with the law. In keeping with our Noise Control theme, imagine that we have a device on a construction site. The device has a microphone that can pick up noises coming from the construction site. In one reading, the device picked up a level of 92 decibels. Using some software on this device, this sensor information is converted into observed data, like so:</p>
     <pre><code id="observed_data_example"></code></pre>
     <p>Now, the software takes this observed data and sends an HTTP GET request to the API to determine compliance:</p>
@@ -89,8 +89,8 @@
       <br>
       <li><b>Promotion of Constrained Legislation</b> - If such an API is put into practice, it will promote the practice of legislating with quantitative constraints.  By legislating only where we need it, it serves the maxim of Jefferson who said "That government is best which governs least."</li>
     </ul>
-    <h3>Conclusion</h3>
-    <p>I hope you now have a better idea of my goals for this API, how it works, and the vision for what it can become. It was a good challenge for my skills and I had a lot of fun putting this prototype together. Thank you for your time!</p>
+    <h3>Final Thoughts</h3>
+    <p>I hope you now have a better idea of my goals for this API, how it works, and the vision for what it can become. It was a good challenge and I had a lot of fun putting it together. Thank you for your time!</p>
   </body>
   <script>
   $(function (){
