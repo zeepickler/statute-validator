@@ -1,4 +1,4 @@
-# Purpose
+### Purpose
 #### The Statute Validator has three purposes:
 ##### Retrieve the text of a statute.
 
